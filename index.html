@@ -12,7 +12,7 @@
 
   <script>
     // Start fetching data immediately when HTML parser hits this
-    window.dataPromise = fetch('data/transformations.json')
+    window.dataPromise = fetch('transformations.json')
       .then(r => r.json())
       .catch(err => {
         console.error('Preload failed:', err);
