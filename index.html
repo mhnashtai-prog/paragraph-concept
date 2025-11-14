@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paragraph Generator - Transformations Explorer</title>
+
+  <!-- Preload JSON data for instant loading -->
+  <link rel="preload" href="data/transformations.json" as="fetch" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    // Start fetching data immediately when HTML parser hits this
+    window.dataPromise = fetch('data/transformations.json')
+      .then(r => r.json())
+      .catch(err => {
+        console.error('Preload failed:', err);
+        return { sentences: [] };
+      });
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+      color: #e5e5e7;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      padding-top: 9rem;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.08) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* UNIFIED HEADER */
+    .global-header {
+      background: rgba(28, 28, 30, 0.95);
+      backdrop-filter: blur(40px);
+      border-bottom: 1px solid rgba(84, 84, 88, 0.3);
+      padding: 0.375rem 0.875rem;
+      margin-bottom: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      right: 1rem;
+      z-index: 100;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .header-row-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .header-brand-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #C9A961;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    .header-brand-subtitle {
+      font-size: 0.625rem;
+      color: #636366;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .home-link {
+      color: #8e8e93;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s;
+    }
+
+    .home-link:hover {
+      color: #C9A961;
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .mode-tabs {
+      display: flex;
+      gap: 0.25rem;
+      padding: 0.25rem;
+      border-radius: 0.625rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.125rem;
+      padding: 0.375rem 0.5rem;
+      background: transparent;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: #8e8e93;
+    }
+
+    .tab:hover {
+      background: rgba(142, 142, 147, 0.1);
+    }
+
+    .tab.active {
+      background: rgba(201, 169, 97, 0.15);
+      color: #C9A961;
+    }
+
+    .tab-icon {
+      font-size: 1.125rem;
+      line-height: 1;
+    }
+
+    .tab-label {
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .main-container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .brand-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 40px rgba(201, 169, 97, 0.3);
+    }
+
+    .brand-subtitle {
+      font-size: 0.875rem;
+      color: #8e8e93;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .central-card {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      border: 3px solid #C9A961;
+      border-radius: 2rem;
+      padding: 4rem 3rem;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8),
+                  0 0 60px rgba(201, 169, 97, 0.3),
+                  inset 0 1px 0 rgba(201, 169, 97, 0.2);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+      min-height: 260px;
+    }
+
+    .central-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #C9A961, #ffa050, #C9A961);
+      border-radius: 2rem;
+      opacity: 0;
+      z-index: -1;
+      animation: borderGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes borderGlow {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    .central-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #C9A961;
+      text-align: center;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(201, 169, 97, 0.5);
+      letter-spacing: -0.02em;
+      line-height: 1.4;
+    }
+
+    .central-card-subtitle {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #94a3b8;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Stage Buttons */
+    .button-grid {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .stage-button {
+      background: linear-gradient(135deg, rgba(28, 28, 30, 0.95) 0%, rgba(20, 20, 22, 0.95) 100%);
+      border: 3px solid rgba(201, 169, 97, 0.4);
+      border-radius: 0.875rem;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      min-width: fit-content;
+    }
+
+    .stage-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .stage-button:hover::before {
+      left: 100%;
+    }
+
+    .stage-button:hover {
+      border-color: #C9A961;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(201, 169, 97, 0.3),
+                  0 0 20px rgba(201, 169, 97, 0.2);
+    }
+
+    .stage-button.active {
+      background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+      border-color: #ffa050;
+      box-shadow: 0 12px 30px rgba(201, 169, 97, 0.5),
+                  0 0 30px rgba(255, 160, 80, 0.4);
+      transform: scale(1.05);
+    }
+
+    .stage-button.disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+      border-style: dashed;
+    }
+
+    .stage-button-icon {
+      font-size: 1.5rem;
+      display: inline-block;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .stage-button-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+
+    .stage-button.active .stage-button-label {
+      color: #0f172a;
+    }
+
+    /* Navigation */
+    .review-nav {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+      background: rgba(28, 28, 30, 0.8);
+      backdrop-filter: blur(20px);
+      border-radius: 3rem;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+    }
+
+    .nav-arrow {
+      width: 40px;
+      height: 40px;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.4);
+      border-radius: 50%;
+      color: #C9A961;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      font-weight: 800;
+    }
+
+    .nav-arrow:hover:not(:disabled) {
+      background: rgba(201, 169, 97, 0.4);
+      border-color: #C9A961;
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.4);
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .nav-dots {
+      display: flex;
+      gap: 0.625rem;
+    }
+
+    .nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.3);
+      border: 2px solid rgba(201, 169, 97, 0.5);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-dot:hover {
+      transform: scale(1.3);
+      background: rgba(201, 169, 97, 0.6);
+    }
+
+    .nav-dot.active {
+      background: #C9A961;
+      border-color: #C9A961;
+      box-shadow: 0 0 16px rgba(201, 169, 97, 0.8);
+      transform: scale(1.4);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-container {
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      align-items: center;
+      margin: auto;
+      padding: 2rem 0;
+    }
+
+    .modal-content-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: 2rem;
+      padding: 3.5rem 3rem;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8),
+                  0 0 80px rgba(201, 169, 97, 0.2);
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: scale(0.9);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-overlay.show .modal-content-card {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .modal-close {
+      position: sticky;
+      top: 1.5rem;
+      float: right;
+      margin: -1rem -1rem 1rem 1rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.1);
+      border: 2px solid rgba(15, 23, 42, 0.2);
+      color: #475569;
+      font-size: 1.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      font-weight: 700;
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+      color: #ef4444;
+      transform: rotate(90deg) scale(1.1);
+    }
+
+    .content-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .content-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.15));
+    }
+
+    .content-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #475569;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .content-subtitle {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .modal-content-text {
+      font-size: 1.125rem;
+      line-height: 1.9;
+      color: #0f172a;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    .modal-content-text p {
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-content-text p span.index {
+      font-weight: 700;
+      color: #6b21a8;
+      margin-right: 0.5rem;
+    }
+
+    .modal-button-grid {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .modal-review-nav {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+      background: rgba(28, 28, 30, 0.9);
+      backdrop-filter: blur(20px);
+      border-radius: 3rem;
+      border: 2px solid rgba(201, 169, 97, 0.5);
+    }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+        padding-top: 1rem;
+      }
+
+      .global-header {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin-bottom: 0.75rem;
+      }
+
+      .header-brand-subtitle {
+        display: none;
+      }
+
+      .tab {
+        padding: 0.3rem 0.25rem;
+      }
+
+      .tab-icon {
+        font-size: 1rem;
+      }
+
+      .tab-label {
+        font-size: 0.5625rem;
+      }
+
+      .main-container {
+        margin-top: 0;
+      }
+
+      .header {
+        margin-bottom: 2rem;
+      }
+
+      .brand-logo {
+        font-size: 1.75rem;
+      }
+
+      .central-card {
+        padding: 2.5rem 1.5rem;
+        min-height: 220px;
+      }
+
+      .central-card-title {
+        font-size: 1.6rem;
+      }
+
+      .central-card-subtitle {
+        font-size: 0.75rem;
+      }
+
+      .button-grid {
+        gap: 0.375rem;
+      }
+
+      .stage-button {
+        padding: 0.75rem 0.625rem;
+        flex-direction: column;
+        gap: 0.25rem;
+        flex: 1;
+        min-width: auto;
+      }
+
+      .stage-button-icon {
+        font-size: 1.5rem;
+      }
+
+      .stage-button-label {
+        font-size: 0.5625rem;
+        letter-spacing: 0.02em;
+      }
+
+      .modal-content-card {
+        padding: 2.5rem 1.5rem;
+      }
+
+      .content-title {
+        font-size: 1.5rem;
+      }
+
+      .modal-content-text {
+        font-size: 1.0rem;
+        line-height: 1.8;
+      }
+
+      .modal-button-grid {
+        gap: 0.375rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+
+    <!-- UNIFIED HEADER -->
+    <header class="global-header">
+      <div class="header-row-main">
+        <div class="brand">
+          <span class="header-brand-logo">INTUITY</span>
+          <span class="header-brand-subtitle">Paragraph Generator</span>
+        </div>
+        <a href="../../../index.html?openModal=writing" class="home-link">← Home</a>
+      </div>
+
+      <nav class="mode-tabs">
+        <a href="#" class="tab active">
+          <span class="tab-icon">📖</span>
+          <span class="tab-label">Read</span>
+        </a>
+        <a href="#" class="tab">
+          <span class="tab-icon">🧠</span>
+          <span class="tab-label">Study</span>
+        </a>
+        <a href="#" class="tab">
+          <span class="tab-icon">✍️</span>
+          <span class="tab-label">Write</span>
+        </a>
+        <a href="#" class="tab">
+          <span class="tab-icon">📚</span>
+          <span class="tab-label">Expressions</span>
+        </a>
+      </nav>
+    </header>
+
+    <div class="header">
+      <h1 class="brand-logo">INTUITY</h1>
+      <p class="brand-subtitle">Sentence → Paragraph Transformation</p>
+    </div>
+
+    <div class="central-card">
+      <h2 class="central-card-title" id="sentenceBase">Loading sentence...</h2>
+      <p class="central-card-subtitle" id="sentenceSubtitle">0 / 0 • Choose a function below</p>
+    </div>
+
+    <div class="button-grid" id="mainButtonGrid">
+      <!-- 7 transform buttons -->
+      <div class="stage-button" data-transform="explain">
+        <span class="stage-button-icon">💬</span>
+        <span class="stage-button-label">Explain</span>
+      </div>
+      <div class="stage-button" data-transform="reason">
+        <span class="stage-button-icon">⚙️</span>
+        <span class="stage-button-label">Reason</span>
+      </div>
+      <div class="stage-button" data-transform="example">
+        <span class="stage-button-icon">🔍</span>
+        <span class="stage-button-label">Example</span>
+      </div>
+      <div class="stage-button" data-transform="reformulate">
+        <span class="stage-button-icon">🔄</span>
+        <span class="stage-button-label">Reformulate</span>
+      </div>
+      <div class="stage-button" data-transform="result">
+        <span class="stage-button-icon">🎯</span>
+        <span class="stage-button-label">Result</span>
+      </div>
+      <div class="stage-button" data-transform="compare">
+        <span class="stage-button-icon">⚖️</span>
+        <span class="stage-button-label">Compare</span>
+      </div>
+      <div class="stage-button" data-transform="contrast">
+        <span class="stage-button-icon">⚡</span>
+        <span class="stage-button-label">Contrast</span>
+      </div>
+    </div>
+
+    <div class="review-nav">
+      <button class="nav-arrow" id="prevSentence">←</button>
+      <div class="nav-dots" id="sentenceDots">
+        <div class="nav-dot active"></div>
+      </div>
+      <button class="nav-arrow" id="nextSentence">→</button>
+    </div>
+
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container">
+
+      <div class="modal-content-card">
+        <div class="modal-close" id="modalClose">×</div>
+        <div class="content-header">
+          <div class="content-icon" id="contentIcon">💬</div>
+          <h3 class="content-title" id="contentTitle">Explain</h3>
+          <p class="content-subtitle" id="contentSubtitle">Sentence • Explain</p>
+        </div>
+        <div class="modal-content-text" id="modalContentText">
+          <p>Loading content...</p>
+        </div>
+      </div>
+
+      <div class="modal-button-grid" id="modalButtonGrid">
+        <div class="stage-button" data-modal-transform="explain">
+          <span class="stage-button-icon">💬</span>
+          <span class="stage-button-label">Explain</span>
+        </div>
+        <div class="stage-button" data-modal-transform="reason">
+          <span class="stage-button-icon">⚙️</span>
+          <span class="stage-button-label">Reason</span>
+        </div>
+        <div class="stage-button" data-modal-transform="example">
+          <span class="stage-button-icon">🔍</span>
+          <span class="stage-button-label">Example</span>
+        </div>
+        <div class="stage-button" data-modal-transform="reformulate">
+          <span class="stage-button-icon">🔄</span>
+          <span class="stage-button-label">Reformulate</span>
+        </div>
+        <div class="stage-button" data-modal-transform="result">
+          <span class="stage-button-icon">🎯</span>
+          <span class="stage-button-label">Result</span>
+        </div>
+        <div class="stage-button" data-modal-transform="compare">
+          <span class="stage-button-icon">⚖️</span>
+          <span class="stage-button-label">Compare</span>
+        </div>
+        <div class="stage-button" data-modal-transform="contrast">
+          <span class="stage-button-icon">⚡</span>
+          <span class="stage-button-label">Contrast</span>
+        </div>
+      </div>
+
+      <div class="modal-review-nav">
+        <button class="nav-arrow" id="modalPrevSentence">←</button>
+        <div class="nav-dots" id="modalSentenceDots"></div>
+        <button class="nav-arrow" id="modalNextSentence">→</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // --- STATE ---
+    let sentencesData = [];
+    let currentSentenceIndex = 0;
+    let currentTransform = 'explain';
+
+    const transformConfig = {
+      explain:   { label: 'Explain',      icon: '💬' },
+      reason:    { label: 'Reason',       icon: '⚙️' },
+      example:   { label: 'Example',      icon: '🔍' },
+      reformulate:{ label: 'Reformulate', icon: '🔄' },
+      result:    { label: 'Result',       icon: '🎯' },
+      compare:   { label: 'Compare',      icon: '⚖️' },
+      contrast:  { label: 'Contrast',     icon: '⚡' }
+    };
+
+    // --- INIT ---
+    async function init() {
+      console.log('🚀 Initializing paragraph generator...');
+      try {
+        const json = await window.dataPromise;
+        sentencesData = json.sentences || [];
+        console.log(`✅ Loaded ${sentencesData.length} sentences.`);
+
+        if (sentencesData.length === 0) {
+          showErrorState();
+          return;
+        }
+
+        updateMainDisplay();
+        renderNavigation();
+        updateTransformButtonStates();
+        attachEventListeners();
+      } catch (err) {
+        console.error('❌ Error loading transformations:', err);
+        showErrorState();
+      }
+    }
+
+    function showErrorState() {
+      document.getElementById('sentenceBase').textContent = 'Failed to load data';
+      document.getElementById('sentenceSubtitle').textContent = 'Check data/transformations.json';
+    }
+
+    // --- UI UPDATE: MAIN CARD + NAV ---
+    function updateMainDisplay() {
+      if (!sentencesData.length) return;
+
+      const sentence = sentencesData[currentSentenceIndex];
+      document.getElementById('sentenceBase').textContent = sentence.base;
+
+      const subtitle = `${currentSentenceIndex + 1} / ${sentencesData.length} • Choose a function below`;
+      document.getElementById('sentenceSubtitle').textContent = subtitle;
+    }
+
+    function renderNavigation() {
+      const dotsContainer = document.getElementById('sentenceDots');
+      dotsContainer.innerHTML = '';
+
+      sentencesData.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        if (i === currentSentenceIndex) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSentence(i));
+        dotsContainer.appendChild(dot);
+      });
+
+      document.getElementById('prevSentence').disabled = currentSentenceIndex === 0;
+      document.getElementById('nextSentence').disabled = currentSentenceIndex === sentencesData.length - 1;
+    }
+
+    function changeSentence(direction) {
+      const newIndex = currentSentenceIndex + direction;
+      if (newIndex >= 0 && newIndex < sentencesData.length) {
+        currentSentenceIndex = newIndex;
+        updateMainDisplay();
+        renderNavigation();
+        updateTransformButtonStates();
+        if (isModalOpen()) {
+          showModalContent(currentTransform);
+          renderModalNavigation();
+        }
+      }
+    }
+
+    function goToSentence(index) {
+      currentSentenceIndex = index;
+      updateMainDisplay();
+      renderNavigation();
+      updateTransformButtonStates();
+      if (isModalOpen()) {
+        showModalContent(currentTransform);
+        renderModalNavigation();
+      }
+    }
+
+    // --- TRANSFORM BUTTON ENABLE / DISABLE ---
+    function getAllowedTransformsForCurrent() {
+      const s = sentencesData[currentSentenceIndex];
+      return s.allowedTransforms || [];
+    }
+
+    function updateTransformButtonStates() {
+      const allowed = getAllowedTransformsForCurrent();
+
+      // Main grid buttons
+      document.querySelectorAll('#mainButtonGrid .stage-button').forEach(btn => {
+        const t = btn.dataset.transform;
+        const isAllowed = allowed.length === 0 || allowed.includes(t);
+        btn.classList.toggle('disabled', !isAllowed);
+      });
+
+      // Modal buttons (if modal open)
+      document.querySelectorAll('#modalButtonGrid .stage-button').forEach(btn => {
+        const t = btn.dataset.modalTransform;
+        const isAllowed = allowed.length === 0 || allowed.includes(t);
+        btn.classList.toggle('disabled', !isAllowed);
+        btn.classList.toggle('active', t === currentTransform);
+      });
+    }
+
+    // --- MODAL LOGIC ---
+    function isModalOpen() {
+      return document.getElementById('modalOverlay').classList.contains('show');
+    }
+
+    function openModal(transformName) {
+      currentTransform = transformName;
+      showModalContent(transformName);
+      renderModalNavigation();
+      updateTransformButtonStates();
+
+      const overlay = document.getElementById('modalOverlay');
+      overlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const overlay = document.getElementById('modalOverlay');
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function showModalContent(transformName) {
+      if (!sentencesData.length) return;
+
+      currentTransform = transformName;
+      const sentence = sentencesData[currentSentenceIndex];
+      const config = transformConfig[transformName] || {label: transformName, icon: '💡'};
+      const examples = (sentence.transformations && sentence.transformations[transformName]) || [];
+
+      document.getElementById('contentIcon').textContent = config.icon;
+      document.getElementById('contentTitle').textContent = config.label;
+
+      const subtitle = `${sentence.base} • ${config.label}`;
+      document.getElementById('contentSubtitle').textContent = subtitle;
+
+      const contentDiv = document.getElementById('modalContentText');
+      if (!examples.length) {
+        contentDiv.innerHTML = '<p style="color:#94a3b8;">No examples available for this function.</p>';
+      } else {
+        const html = examples.map((ex, idx) =>
+          `<p><span class="index">${idx + 1}.</span>${ex}</p>`
+        ).join('');
+        contentDiv.innerHTML = html;
+      }
+
+      // Update modal transform buttons active state
+      document.querySelectorAll('#modalButtonGrid .stage-button').forEach(btn => {
+        const t = btn.dataset.modalTransform;
+        btn.classList.toggle('active', t === transformName);
+      });
+    }
+
+    function renderModalNavigation() {
+      const dotsContainer = document.getElementById('modalSentenceDots');
+      dotsContainer.innerHTML = '';
+
+      sentencesData.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        if (i === currentSentenceIndex) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+          goToSentence(i);
+        });
+        dotsContainer.appendChild(dot);
+      });
+
+      document.getElementById('modalPrevSentence').disabled = currentSentenceIndex === 0;
+      document.getElementById('modalNextSentence').disabled = currentSentenceIndex === sentencesData.length - 1;
+    }
+
+    // --- EVENT LISTENERS ---
+    function attachEventListeners() {
+      // Main transform buttons
+      document.querySelectorAll('#mainButtonGrid .stage-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = btn.dataset.transform;
+          const allowed = getAllowedTransformsForCurrent();
+          const isAllowed = allowed.length === 0 || allowed.includes(t);
+          if (!isAllowed) return;
+          openModal(t);
+        });
+      });
+
+      // Modal transform buttons
+      document.querySelectorAll('#modalButtonGrid .stage-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = btn.dataset.modalTransform;
+          const allowed = getAllowedTransformsForCurrent();
+          const isAllowed = allowed.length === 0 || allowed.includes(t);
+          if (!isAllowed) return;
+          showModalContent(t);
+          updateTransformButtonStates();
+        });
+      });
+
+      // Close modal
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target.id === 'modalOverlay') closeModal();
+      });
+
+      // Navigation main
+      document.getElementById('prevSentence').addEventListener('click', () => changeSentence(-1));
+      document.getElementById('nextSentence').addEventListener('click', () => changeSentence(1));
+
+      // Navigation in modal
+      document.getElementById('modalPrevSentence').addEventListener('click', () => changeSentence(-1));
+      document.getElementById('modalNextSentence').addEventListener('click', () => changeSentence(1));
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', handleKeyPress);
+    }
+
+    function handleKeyPress(e) {
+      const modalOpen = isModalOpen();
+
+      if (e.key === 'Escape' && modalOpen) {
+        closeModal();
+      }
+
+      if (e.key === 'ArrowLeft') {
+        changeSentence(-1);
+      }
+      if (e.key === 'ArrowRight') {
+        changeSentence(1);
+      }
+
+      // 1–7 keys = transform shortcuts
+      const keyToTransform = {
+        '1': 'explain',
+        '2': 'reason',
+        '3': 'example',
+        '4': 'reformulate',
+        '5': 'result',
+        '6': 'compare',
+        '7': 'contrast'
+      };
+      if (keyToTransform[e.key]) {
+        const t = keyToTransform[e.key];
+        const allowed = getAllowedTransformsForCurrent();
+        const isAllowed = allowed.length === 0 || allowed.includes(t);
+        if (!isAllowed) return;
+        if (modalOpen) {
+          showModalContent(t);
+          updateTransformButtonStates();
+        } else {
+          openModal(t);
+        }
+      }
+    }
+
+    // Start
+    init();
+  </script>
+</body>
+</html>
