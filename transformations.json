@@ -1,0 +1,226 @@
+{
+  "sentences": [
+    {
+      "id": "travel_horizons",
+      "base": "Travelling can widen our horizons.",
+      "allowedTransforms": ["explain", "reason", "example", "reformulate", "result", "compare", "contrast"],
+      "transformations": {
+        "explain": [
+          "This means that travelling exposes us to new cultures and perspectives.",
+          "In other words, it helps us understand different ways of life."
+        ],
+        "reason": [
+          "This is because travelling introduces us to people with different beliefs and habits."
+        ],
+        "example": [
+          "For example, visiting Japan can show us traditions we have never experienced.",
+          "For instance, travelling to India exposes us to a completely different lifestyle."
+        ],
+        "reformulate": [
+          "Put simply, travelling helps us see the world in a new light."
+        ],
+        "result": [
+          "As a result, travellers often become more open-minded."
+        ],
+        "compare": [
+          "Similarly, reading widely can also broaden our perspective."
+        ],
+        "contrast": [
+          "In contrast, staying in one place limits our understanding of the world."
+        ]
+      }
+    },
+
+    {
+      "id": "exercise_stress",
+      "base": "Regular exercise reduces stress.",
+      "allowedTransforms": ["explain", "reason", "example", "reformulate", "result"],
+      "transformations": {
+        "explain": [
+          "This means that physical activity helps people relax and release tension."
+        ],
+        "reason": [
+          "This is because exercise produces chemicals that improve mood."
+        ],
+        "example": [
+          "For example, many students feel calmer after a quick workout."
+        ],
+        "reformulate": [
+          "In other words, exercise makes it easier to cope with pressure."
+        ],
+        "result": [
+          "As a result, active people often feel more balanced emotionally."
+        ]
+      }
+    },
+
+    {
+      "id": "technology_connect",
+      "base": "Technology allows us to stay connected.",
+      "allowedTransforms": ["explain", "example", "reformulate", "compare", "contrast"],
+      "transformations": {
+        "explain": [
+          "This means that people can communicate instantly from anywhere."
+        ],
+        "example": [
+          "For example, video calls make it easy to speak to relatives abroad."
+        ],
+        "reformulate": [
+          "Put simply, technology helps people stay in touch."
+        ],
+        "compare": [
+          "Similarly, social media also keeps people connected."
+        ],
+        "contrast": [
+          "However, in the past people had to rely on letters, which took much longer."
+        ]
+      }
+    },
+
+    {
+      "id": "reading_skill",
+      "base": "Reading improves language skills.",
+      "allowedTransforms": ["explain", "example", "result"],
+      "transformations": {
+        "explain": [
+          "This means that reading exposes learners to new vocabulary and structures."
+        ],
+        "example": [
+          "For instance, novels contain expressions students would not hear in daily conversation."
+        ],
+        "result": [
+          "As a result, frequent readers often speak and write more fluently."
+        ]
+      }
+    },
+
+    {
+      "id": "teamwork_success",
+      "base": "Teamwork leads to greater success.",
+      "allowedTransforms": ["explain", "reason", "example", "reformulate", "result"],
+      "transformations": {
+        "explain": [
+          "This means that working together makes it easier to solve problems."
+        ],
+        "reason": [
+          "This is because teams combine different skills and ideas."
+        ],
+        "example": [
+          "For example, group projects usually produce more creative solutions."
+        ],
+        "reformulate": [
+          "In simpler terms, people achieve more when they cooperate."
+        ],
+        "result": [
+          "Therefore, teamwork increases the chance of completing tasks successfully."
+        ]
+      }
+    },
+
+    {
+      "id": "sleep_focus",
+      "base": "Sleeping well improves concentration.",
+      "allowedTransforms": ["explain", "reason", "example", "result"],
+      "transformations": {
+        "explain": [
+          "This means that good sleep helps the brain function clearly."
+        ],
+        "reason": [
+          "This happens because the brain processes information during the night."
+        ],
+        "example": [
+          "For example, students who sleep eight hours tend to focus better during lessons."
+        ],
+        "result": [
+          "As a result, well-rested people are often more productive."
+        ]
+      }
+    },
+
+    {
+      "id": "music_mood",
+      "base": "Listening to music can improve our mood.",
+      "allowedTransforms": ["explain", "reason", "example", "reformulate"],
+      "transformations": {
+        "explain": [
+          "This means that music can help people feel happier and more relaxed."
+        ],
+        "reason": [
+          "This is because music affects emotions in the brain."
+        ],
+        "example": [
+          "For example, upbeat songs often make people feel more energetic."
+        ],
+        "reformulate": [
+          "Put differently, music can lift our spirits."
+        ]
+      }
+    },
+
+    {
+      "id": "internet_learn",
+      "base": "The internet makes learning more accessible.",
+      "allowedTransforms": ["explain", "example", "result", "compare", "contrast"],
+      "transformations": {
+        "explain": [
+          "This means that anyone can study from anywhere with an internet connection."
+        ],
+        "example": [
+          "For instance, online courses allow students to learn at their own pace."
+        ],
+        "result": [
+          "As a result, education is now available to more people than ever before."
+        ],
+        "compare": [
+          "Similarly, libraries also provide free access to knowledge."
+        ],
+        "contrast": [
+          "In contrast, traditional classes require students to be physically present."
+        ]
+      }
+    },
+
+    {
+      "id": "sport_confidence",
+      "base": "Playing sports can increase confidence.",
+      "allowedTransforms": ["explain", "example", "result", "reason"],
+      "transformations": {
+        "explain": [
+          "This means that participating in sports helps people feel more capable."
+        ],
+        "example": [
+          "For example, scoring a goal can make a student feel proud of their ability."
+        ],
+        "result": [
+          "Therefore, regular training often boosts self-esteem."
+        ],
+        "reason": [
+          "This is because sports encourage people to set and reach goals."
+        ]
+      }
+    },
+
+    {
+      "id": "cooking_health",
+      "base": "Cooking at home is healthier than eating out.",
+      "allowedTransforms": ["explain", "example", "reason", "result", "contrast"],
+      "transformations": {
+        "explain": [
+          "This means that home-cooked meals usually contain fewer additives."
+        ],
+        "example": [
+          "For instance, preparing your own food allows you to control sugar and salt levels."
+        ],
+        "reason": [
+          "This is because restaurants often use more oil and preservatives."
+        ],
+        "result": [
+          "As a result, people who cook at home tend to maintain a more balanced diet."
+        ],
+        "contrast": [
+          "On the other hand, fast-food meals are typically high in calories."
+        ]
+      }
+    }
+  ]
+}
