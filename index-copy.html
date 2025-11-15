@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY – Paragraph Builder</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+      color: #e5e5e7;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      padding-top: 3rem;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.08) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .main-container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.2rem;
+    }
+
+    .brand-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+      text-shadow: 0 0 40px rgba(201, 169, 97, 0.3);
+    }
+
+    .brand-subtitle {
+      font-size: 0.95rem;
+      color: #8e8e93;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-author {
+      font-size: 0.8rem;
+      color: #a1a1aa;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* CENTRAL CARD */
+    .central-card {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      border: 3px solid #C9A961;
+      border-radius: 2rem;
+      padding: 2.8rem 2.4rem 2.4rem;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.8),
+        0 0 60px rgba(201, 169, 97, 0.3),
+        inset 0 1px 0 rgba(201, 169, 97, 0.2);
+      overflow: hidden;
+      margin-bottom: 2.25rem;
+      width: 100%;
+    }
+
+    .central-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      color: #F3E7C0;
+      margin-bottom: 0.4rem;
+      text-align: left;
+    }
+
+    .central-card-subtitle {
+      font-size: 0.9rem;
+      color: #cbd5f5;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    /* MODE TOGGLE */
+    .mode-toggle {
+      display: inline-flex;
+      gap: 0.4rem;
+      border-radius: 999px;
+      padding: 0.25rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(201, 169, 97, 0.4);
+      margin: 0 0 1rem 0;
+    }
+
+    .mode-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      background: transparent;
+      color: #e5e5ea;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .mode-btn:hover {
+      background: rgba(250, 204, 21, 0.06);
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+      color: #111827;
+      box-shadow: 0 0 15px rgba(201, 169, 97, 0.7);
+    }
+
+    /* PARAGRAPH AREA */
+    .paragraph-area {
+      margin-top: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      border-radius: 1rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(201, 169, 97, 0.35);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #e5e7eb;
+      text-align: left;
+      white-space: normal;
+    }
+
+    .paragraph-area-empty {
+      font-style: italic;
+      color: #9ca3af;
+    }
+
+    /* COPY BUTTON */
+    .copy-btn {
+      margin-top: 1rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(201, 169, 97, 0.6);
+      background: rgba(24, 24, 27, 0.95);
+      color: #FDE68A;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    /* FUNCTION BUTTONS */
+    .button-grid {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .stage-button {
+      background: linear-gradient(135deg, rgba(28, 28, 30, 0.95), rgba(20, 20, 22, 0.95));
+      border: 3px solid rgba(201, 169, 97, 0.4);
+      border-radius: 0.875rem;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .stage-button:hover {
+      border-color: #C9A961;
+      transform: translateY(-3px);
+    }
+
+    .stage-button.disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    .stage-button-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .stage-button-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* NAVIGATION */
+    .review-nav {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+      background: rgba(28, 28, 30, 0.8);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 3rem;
+    }
+
+    .nav-arrow {
+      width: 40px;
+      height: 40px;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.4);
+      border-radius: 999px;
+      color: #C9A961;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    .nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.3);
+      border: 2px solid rgba(201, 169, 97, 0.5);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-dot.active {
+      background: #C9A961;
+      box-shadow: 0 0 15px rgba(201, 169, 97, 0.8);
+    }
+
+    /* MODAL OVERLAY */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.93);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      z-index: 2000;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-content-card {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  border-radius: 2rem;
+  padding: 3rem;
+  max-width: 900px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 3px solid rgba(201, 169, 97, 0.6);
+  color: #e5e7eb; /* makes sentences bright and readable */
+  box-shadow:
+    0 0 20px rgba(201, 169, 97, 0.3),
+    0 30px 80px rgba(0, 0, 0, 0.9);
+}
+
+    .modal-example-line {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .use-sentence-btn {
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: #15803d;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      border: 1px solid #16a34a;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1 class="brand-logo">INTUITY</h1>
+    <p class="brand-subtitle">Sentence → Paragraph Transformation</p>
+    <p class="brand-author">Majid Nashtai</p>
+  </div>
+
+  <!-- CENTRAL CARD -->
+  <div class="central-card">
+
+    <h2 class="central-card-title" id="sentenceBase">Loading…</h2>
+    <p class="central-card-subtitle" id="sentenceSubtitle"></p>
+
+    <!-- MODE TOGGLE -->
+    <div class="mode-toggle" id="modeToggle">
+      <button class="mode-btn active" data-mode="essays">Essay</button>
+      <button class="mode-btn" data-mode="reports">Report</button>
+      <button class="mode-btn" data-mode="reviews">Review</button>
+    </div>
+
+    <!-- PARAGRAPH AREA -->
+    <div id="paragraphArea" class="paragraph-area paragraph-area-empty">
+      Your paragraph will appear here as you add sentences.
+    </div>
+
+    <button id="copyParagraphBtn" class="copy-btn">📋 Copy</button>
+  </div>
+
+  <!-- FUNCTION BUTTONS -->
+  <div class="button-grid" id="mainButtonGrid">
+    <div class="stage-button" data-transform="explain">
+      <span class="stage-button-icon">💬</span>
+      <span class="stage-button-label">Explain</span>
+    </div>
+    <div class="stage-button" data-transform="reason">
+      <span class="stage-button-icon">⚙️</span>
+      <span class="stage-button-label">Reason</span>
+    </div>
+    <div class="stage-button" data-transform="example">
+      <span class="stage-button-icon">🔍</span>
+      <span class="stage-button-label">Example</span>
+    </div>
+    <div class="stage-button" data-transform="reformulate">
+      <span class="stage-button-icon">🔄</span>
+      <span class="stage-button-label">Reformulate</span>
+    </div>
+    <div class="stage-button" data-transform="result">
+      <span class="stage-button-icon">🎯</span>
+      <span class="stage-button-label">Result</span>
+    </div>
+    <div class="stage-button" data-transform="compare">
+      <span class="stage-button-icon">⚖️</span>
+      <span class="stage-button-label">Compare</span>
+    </div>
+    <div class="stage-button" data-transform="contrast">
+      <span class="stage-button-icon">⚡</span>
+      <span class="stage-button-label">Contrast</span>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="review-nav">
+    <button class="nav-arrow" id="prevSentence">←</button>
+    <div class="nav-dots" id="sentenceDots"></div>
+    <button class="nav-arrow" id="nextSentence">→</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content-card">
+    <button id="modalClose" class="copy-btn" style="float:right;">Close</button>
+    <h2 id="contentTitle" style="margin-bottom:1rem;">Function</h2>
+    <div id="modalContentText">Loading…</div>
+  </div>
+</div>
+
+
+<script>
+/* ----------- STATE ----------- */
+let sentencesData = [];
+let currentSentenceIndex = 0;
+let currentTransform = 'explain';
+let currentMode = 'essays';
+let paragraphText = "";
+
+/* ----------- INIT ----------- */
+async function init() {
+  attachEventListeners();
+  await loadMode('essays'); // default
+}
+
+/* ----------- LOAD MODE ----------- */
+async function loadMode(mode) {
+  currentMode = mode;
+
+  document.querySelectorAll('.mode-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.mode === mode)
+  );
+
+  const fileMap = {
+    essays: 'transformations.json',
+    reports: 'transformations.json',
+    reviews: 'transformations.json'
+  };
+
+  const file = fileMap[mode];
+
+  try {
+    const res = await fetch(file);
+    const data = await res.json();
+    sentencesData = data.sentences || [];
+    currentSentenceIndex = 0;
+    updateMainDisplay();
+    renderNavigation();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+/* ----------- RENDER MAIN ----------- */
+function updateMainDisplay() {
+  const s = sentencesData[currentSentenceIndex];
+  document.getElementById("sentenceBase").textContent = s.base;
+  document.getElementById("sentenceSubtitle").textContent =
+    `${currentSentenceIndex + 1} / ${sentencesData.length}`;
+
+  paragraphText = s.base;
+  updateParagraphArea();
+}
+
+function updateParagraphArea() {
+  const box = document.getElementById("paragraphArea");
+  box.textContent = paragraphText;
+  box.classList.remove("paragraph-area-empty");
+}
+
+/* ----------- ADD SENTENCE ----------- */
+function addSentenceToParagraph(transformName, index) {
+  const s = sentencesData[currentSentenceIndex];
+  const list = s.transformations[transformName];
+  const chosen = list[index];
+  paragraphText = paragraphText.trim() + " " + chosen.trim();
+  updateParagraphArea();
+}
+
+/* ----------- MODAL ----------- */
+function openModal(transformName) {
+  currentTransform = transformName;
+  showModalContent(transformName);
+  document.getElementById("modalOverlay").classList.add("show");
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("show");
+}
+
+function showModalContent(t) {
+  const s = sentencesData[currentSentenceIndex];
+  const content = s.transformations[t] || [];
+  const div = document.getElementById("modalContentText");
+  document.getElementById("contentTitle").textContent = t.toUpperCase();
+
+  div.innerHTML = content.length === 0
+    ? "<p>No examples available.</p>"
+    : content.map((ex, i) =>
+        `<div class="modal-example-line">
+           <span>${i + 1}.</span>
+           <span>${ex}</span>
+           <button class="use-sentence-btn" data-transform="${t}" data-index="${i}">➕ Use</button>
+         </div>`
+      ).join("");
+
+  div.querySelectorAll(".use-sentence-btn").forEach(btn =>
+    btn.addEventListener("click", () => {
+      addSentenceToParagraph(btn.dataset.transform, parseInt(btn.dataset.index));
+    })
+  );
+}
+
+/* ----------- NAVIGATION ----------- */
+function renderNavigation() {
+  const container = document.getElementById("sentenceDots");
+  container.innerHTML = "";
+
+  sentencesData.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "nav-dot" + (i === currentSentenceIndex ? " active" : "");
+    dot.addEventListener("click", () => goToSentence(i));
+    container.appendChild(dot);
+  });
+}
+
+function goToSentence(i) {
+  currentSentenceIndex = i;
+  updateMainDisplay();
+  renderNavigation();
+}
+
+function changeSentence(dir) {
+  const newIndex = currentSentenceIndex + dir;
+  if (newIndex < 0 || newIndex >= sentencesData.length) return;
+  goToSentence(newIndex);
+}
+
+/* ----------- EVENT LISTENERS ----------- */
+function attachEventListeners() {
+  document.querySelectorAll('.stage-button').forEach(btn =>
+    btn.addEventListener("click", () => openModal(btn.dataset.transform))
+  );
+
+  document.getElementById("modalClose").addEventListener("click", closeModal);
+  document.getElementById("modalOverlay").addEventListener("click", e => {
+    if (e.target.id === "modalOverlay") closeModal();
+  });
+
+  document.getElementById("prevSentence").addEventListener("click", () => changeSentence(-1));
+  document.getElementById("nextSentence").addEventListener("click", () => changeSentence(1));
+
+  document.querySelectorAll(".mode-btn").forEach(btn =>
+    btn.addEventListener("click", () => loadMode(btn.dataset.mode))
+  );
+
+  document.getElementById("copyParagraphBtn").addEventListener("click", () => {
+    navigator.clipboard.writeText(paragraphText);
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>
