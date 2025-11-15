@@ -543,6 +543,7 @@
     <div id="modalContentText">Loading…</div>
   </div>
 </div>
+    
 <script>
 /* ----------------------------------------------------
    STATE
@@ -553,12 +554,16 @@ let currentTransform = 'explain';
 let currentMode = 'essays';
 let paragraphText = "";
 
+// Track which transforms have already been used per sentence
+// { [sentenceIndex]: { explain: true, reason: true, ... } }
+let usedTransforms = {};
+
 /* ----------------------------------------------------
    INITIALISE
 ---------------------------------------------------- */
 async function init() {
   attachEventListeners();
-  await loadMode('essays'); // default
+  await loadMode('essays'); // default mode
 }
 
 /* ----------------------------------------------------
@@ -571,8 +576,8 @@ async function loadMode(mode) {
 
   const fileMap = {
     essays: 'transformations.json',
-    reports: 'transformations.json',
-    reviews: 'transformations.json'
+    reports: 'transformations-reports.json',
+    reviews: 'transformations-reviews.json'
   };
 
   const file = fileMap[mode];
@@ -582,6 +587,10 @@ async function loadMode(mode) {
     const data = await res.json();
     sentencesData = data.sentences || [];
     currentSentenceIndex = 0;
+
+    // reset used transforms for new mode
+    usedTransforms = {};
+
     updateMainDisplay();
     renderNavigation();
   } catch (e) {
@@ -599,13 +608,18 @@ function updateMainDisplay() {
   document.getElementById("sentenceSubtitle").textContent =
     `${currentSentenceIndex + 1} / ${sentencesData.length}`;
 
-  // reset paragraph
+  // Ensure tracking object exists for this sentence
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+
+  // Reset paragraph for this sentence
   paragraphText = sentenceObj.base;
   updateParagraphArea();
 }
 
 /* ----------------------------------------------------
-   UPDATE PARAGRAPH
+   UPDATE PARAGRAPH AREA
 ---------------------------------------------------- */
 function updateParagraphArea() {
   const box = document.getElementById("paragraphArea");
@@ -615,14 +629,47 @@ function updateParagraphArea() {
 
 /* ----------------------------------------------------
    ADD SENTENCE TO PARAGRAPH
+   - Only allow one sentence per transform per sentence
 ---------------------------------------------------- */
-function addSentenceToParagraph(transformName, index) {
+function addSentenceToParagraph(transformName, index, btn) {
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+
+  // If this transform already used for this sentence, do nothing
+  if (usedTransforms[currentSentenceIndex][transformName]) {
+    return;
+  }
+
   const sentenceObj = sentencesData[currentSentenceIndex];
-  const list = sentenceObj.transformations[transformName];
+  const list = (sentenceObj.transformations && sentenceObj.transformations[transformName]) || [];
   const chosen = list[index];
+  if (!chosen) return;
 
   paragraphText = paragraphText.trim() + " " + chosen.trim();
   updateParagraphArea();
+
+  // Mark this transform as used for this sentence
+  usedTransforms[currentSentenceIndex][transformName] = true;
+
+  // Visually mark the chosen button
+  if (btn) {
+    // Remove "selected" from any previous buttons in this modal
+    document
+      .querySelectorAll(".use-sentence-btn")
+      .forEach(b => b.classList.remove("selected"));
+
+    // Add class that turns it green + adds checkmark
+    btn.classList.add("selected");
+
+    // Disable all buttons in this modal for this transform
+    const container = document.getElementById("modalContentText");
+    container.querySelectorAll(".use-sentence-btn").forEach(b => {
+      b.disabled = true;
+      b.style.opacity = 0.4;
+      b.style.cursor = "not-allowed";
+    });
+  }
 }
 
 /* ----------------------------------------------------
@@ -640,29 +687,48 @@ function closeModal() {
 
 function showModalContent(transformName) {
   const s = sentencesData[currentSentenceIndex];
-  const content = s.transformations[transformName] || [];
+  const content = (s.transformations && s.transformations[transformName]) || [];
   const div = document.getElementById("modalContentText");
 
   document.getElementById("contentTitle").textContent =
     transformName.toUpperCase();
 
-  div.innerHTML = content.length === 0
-    ? "<p>No examples available.</p>"
-    : content.map((ex, i) =>
-        `<div class="modal-example-line">
-           <span>${i + 1}.</span>
-           <span>${ex}</span>
-           <button class="use-sentence-btn" data-transform="${transformName}" data-index="${i}">
-             ➕ Use
-           </button>
-         </div>`
-      ).join("");
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+  const alreadyUsed = !!usedTransforms[currentSentenceIndex][transformName];
 
-  div.querySelectorAll(".use-sentence-btn").forEach(btn =>
+  if (!content.length) {
+    div.innerHTML = "<p>No examples available.</p>";
+    return;
+  }
+
+  // Build the list of options
+  div.innerHTML = content.map((ex, i) =>
+    `<div class="modal-example-line">
+       <span>${i + 1}.</span>
+       <span>${ex}</span>
+       <button class="use-sentence-btn" data-transform="${transformName}" data-index="${i}">
+         ➕ Use
+       </button>
+     </div>`
+  ).join("");
+
+  // Attach behaviour to each button
+  div.querySelectorAll(".use-sentence-btn").forEach(btn => {
+    if (alreadyUsed) {
+      // This transform already chosen for this sentence → block all
+      btn.disabled = true;
+      btn.style.opacity = 0.4;
+      btn.style.cursor = "not-allowed";
+      return;
+    }
+
     btn.addEventListener("click", () => {
-      addSentenceToParagraph(btn.dataset.transform, parseInt(btn.dataset.index));
-    })
-  );
+      const idx = parseInt(btn.dataset.index, 10);
+      addSentenceToParagraph(transformName, idx, btn);
+    });
+  });
 }
 
 /* ----------------------------------------------------
@@ -673,6 +739,7 @@ function updateSegmentedIndicator(mode) {
   const buttons = Array.from(document.querySelectorAll('.segmented-btn'));
 
   const index = buttons.findIndex(btn => btn.dataset.mode === mode);
+  if (index === -1 || !indicator) return;
 
   indicator.style.transform = `translateX(${index * 100}%)`;
 
@@ -698,6 +765,12 @@ function renderNavigation() {
 
 function goToSentence(i) {
   currentSentenceIndex = i;
+
+  // ensure we have a tracking entry for this sentence
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+
   updateMainDisplay();
   renderNavigation();
 }
@@ -712,7 +785,7 @@ function changeSentence(direction) {
    EVENT LISTENERS
 ---------------------------------------------------- */
 function attachEventListeners() {
-  // transformation buttons
+  // transformation buttons (Explain, Reason, etc.)
   document.querySelectorAll('.stage-button').forEach(btn =>
     btn.addEventListener("click", () => openModal(btn.dataset.transform))
   );
@@ -723,7 +796,7 @@ function attachEventListeners() {
     if (e.target.id === "modalOverlay") closeModal();
   });
 
-  // arrows
+  // sentence navigation arrows
   document.getElementById("prevSentence").addEventListener("click", () => changeSentence(-1));
   document.getElementById("nextSentence").addEventListener("click", () => changeSentence(1));
 
@@ -732,15 +805,18 @@ function attachEventListeners() {
     btn.addEventListener("click", () => loadMode(btn.dataset.mode))
   );
 
-  // copy button
+  // copy paragraph
   document.getElementById("copyParagraphBtn").addEventListener("click", () => {
+    if (!paragraphText.trim()) return;
     navigator.clipboard.writeText(paragraphText);
   });
 }
 
+/* ----------------------------------------------------
+   START
+---------------------------------------------------- */
 init();
 </script>
-
 </body>
 </html>
 
