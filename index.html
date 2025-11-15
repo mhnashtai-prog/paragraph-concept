@@ -3,7 +3,1198 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTUITY – Para<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INTUITY – Paragraph Builder</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    color: #e5e5e7;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    padding-top: 3rem;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.08) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 2.2rem;
+  }
+
+  .brand-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+    text-shadow: 0 0 40px rgba(201, 169, 97, 0.3);
+  }
+
+  .brand-subtitle {
+    font-size: 0.95rem;
+    color: #8e8e93;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .brand-author {
+    font-size: 0.8rem;
+    color: #a1a1aa;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* CENTRAL CARD */
+  .central-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+    border: 3px solid #C9A961;
+    border-radius: 2rem;
+    padding: 2.8rem 2.4rem 2.4rem;
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.8),
+      0 0 60px rgba(201, 169, 97, 0.3),
+      inset 0 1px 0 rgba(201, 169, 97, 0.2);
+    overflow: hidden;
+    margin-bottom: 2.25rem;
+    width: 100%;
+    position: relative;
+  }
+
+  .central-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    color: #F3E7C0;
+    margin-bottom: 0.3rem;
+    text-align: left;
+  }
+
+  .central-card-subtitle {
+    font-size: 0.9rem;
+    color: #cbd5f5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  /* FROSTED GLASS GOLD SEGMENTED CONTROL */
+  .segmented-toggle {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
+
+    display: inline-flex;
+    align-items: center;
+
+    background: rgba(20, 20, 22, 0.32);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(201,169,97,0.35);
+
+    border-radius: 999px;
+    padding: 0.25rem;
+    height: 38px;
+    z-index: 20;
+  }
+
+  .segmented-bg {
+    position: absolute;
+    height: calc(100% - 6px);
+    top: 3px;
+    left: 3px;
+    width: calc((100% - 6px) / 3);
+    border-radius: 999px;
+
+    background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+    box-shadow: 0 0 15px rgba(201, 169, 97, 0.3);
+
+    transition: transform 0.25s ease;
+    z-index: 0;
+  }
+
+  .segmented-btn {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 0 1rem;
+    height: 100%;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    color: #e5e5ea;
+    border-radius: 999px;
+    cursor: pointer;
+
+    z-index: 2;
+    transition: color 0.25s;
+  }
+
+  .segmented-btn.active {
+    color: #111;
+  }
+
+  /* PARAGRAPH AREA */
+  .paragraph-area {
+    margin-top: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(201, 169, 97, 0.35);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #e5e7eb;
+    text-align: left;
+    white-space: normal;
+    min-height: 120px;
+  }
+
+  .paragraph-area-empty {
+    font-style: italic;
+    color: #9ca3af;
+  }
+
+  /* COPY BUTTON */
+  .copy-btn {
+    margin-top: 1rem;
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 169, 97, 0.6);
+    background: rgba(24, 24, 27, 0.95);
+    color: #FDE68A;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .copy-btn:hover {
+    background: rgba(250, 204, 21, 0.14);
+  }
+
+  /* TRANSFORM BUTTONS */
+  .button-grid {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .stage-button {
+    background: linear-gradient(135deg, rgba(28, 28, 30, 0.95), rgba(20, 20, 22, 0.95));
+    border: 3px solid rgba(201, 169, 97, 0.4);
+    border-radius: 0.875rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .stage-button:hover {
+    border-color: #C9A961;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(201, 169, 97, 0.3);
+  }
+
+  .stage-button.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .stage-button-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .stage-button-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* NAVIGATION */
+  .review-nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    background: rgba(28, 28, 30, 0.8);
+    border: 2px solid rgba(201, 169, 97, 0.3);
+    border-radius: 3rem;
+  }
+
+  .nav-arrow {
+    width: 40px;
+    height: 40px;
+    background: rgba(201, 169, 97, 0.2);
+    border: 2px solid rgba(201, 169, 97, 0.4);
+    border-radius: 999px;
+    color: #C9A961;
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+
+  .nav-dots {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(201, 169, 97, 0.3);
+    border: 2px solid rgba(201, 169, 97, 0.5);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .nav-dot.active {
+    background: #C9A961;
+    box-shadow: 0 0 15px rgba(201, 169, 97, 0.8);
+  }
+
+  /* MODAL OVERLAY */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.92) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 9999;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal-content-card {
+    position: relative;
+    z-index: 10000;
+    background: linear-gradient(135deg, #1f1f1f 0%, #020617 100%);
+    border-radius: 1.8rem;
+    padding: 2.8rem 2.2rem 2.2rem;
+    max-width: 900px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border: 2px solid rgba(201,169,97,0.7);
+    box-shadow:
+      0 0 30px rgba(0, 0, 0, 0.9),
+      0 0 40px rgba(201, 169, 97, 0.4);
+    color: #e5e7eb;
+  }
+
+  #contentTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #facc15;
+  }
+
+  #modalContentText {
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+
+  .modal-example-line {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.55rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-example-line span:first-child {
+    font-weight: 700;
+    color: #facc15;
+    min-width: 1.3rem;
+  }
+
+  .modal-example-line span:nth-child(2) {
+    flex: 1;
+  }
+
+  /* USE BUTTON */
+  .use-sentence-btn {
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #15803d;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    border: 1px solid #16a34a;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .use-sentence-btn:hover {
+    background: #bbf7d0;
+    box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+    transform: translateY(-1px);
+  }
+
+  .use-sentence-btn:active {
+    transform: scale(0.96) translateY(0);
+    box-shadow: 0 0 4px rgba(22, 163, 74, 0.4);
+  }
+
+  .use-sentence-btn.selected {
+    background: #16a34a !important;
+    color: white !important;
+    border-color: #166534;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+    padding-right: 1.6rem;
+  }
+
+  .use-sentence-btn.selected::after {
+    content: "✔";
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: white;
+  }
+
+  /* PARAGRAPH ACTIONS */
+  .paragraph-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .opener-main-btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 169, 97, 0.7);
+    background: rgba(24, 24, 27, 0.95);
+    color: #FDE68A;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .opener-main-btn:hover {
+    background: rgba(250, 204, 21, 0.12);
+  }
+
+  .opener-dropdown {
+    position: relative;
+  }
+
+  .opener-menu {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background: rgba(15, 23, 42, 0.98);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(201,169,97,0.4);
+    padding: 0.5rem;
+    min-width: 260px;
+    max-height: 260px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+  }
+
+  .opener-menu.show {
+    display: block;
+  }
+
+  .opener-option {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.78rem;
+    color: #E5E7EB;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+  }
+
+  .opener-option:hover {
+    background: rgba(201,169,97,0.18);
+  }
+
+  /* ========================================
+     MOBILE OPTIMIZATION - TEXT-FIRST DESIGN
+     ======================================== */
+  @media (max-width: 768px) {
+    body {
+      padding: 0.5rem;
+      padding-top: 0.5rem;
+      align-items: flex-start;
+    }
+
+    /* Minimal header */
+    .header {
+      margin-bottom: 0.6rem;
+    }
+
+    .brand-logo {
+      font-size: 1.4rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .brand-subtitle {
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+    }
+
+    .brand-author {
+      display: none;
+    }
+
+    /* Tiny segmented control - positioned BELOW title */
+    .segmented-toggle {
+      position: static; /* Remove absolute positioning */
+      transform: scale(0.7);
+      transform-origin: left center;
+      height: 28px;
+      margin-top: 0.3rem;
+      margin-bottom: 0.4rem;
+      margin-left: -0.2rem;
+    }
+
+    .segmented-btn {
+      padding: 0 0.65rem;
+      font-size: 0.6rem;
+    }
+
+    /* Minimal card padding */
+    .central-card {
+      padding: 1.2rem 0.85rem 0.9rem;
+      border-radius: 1rem;
+      border-width: 2px;
+      margin-bottom: 0.8rem;
+    }
+
+    /* Title visible - no padding needed now */
+    .central-card-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.15rem;
+      line-height: 1.3;
+      padding-right: 0; /* Segmented control now below */
+    }
+
+    .central-card-subtitle {
+      font-size: 0.68rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* 🎯 DOMINANT PARAGRAPH AREA - DETACHED */
+    .paragraph-area {
+      margin-top: 0.4rem;
+      margin-bottom: 1.2rem; /* SPACE BEFORE BUTTONS */
+      padding: 1.2rem 1rem;
+      font-size: 0.94rem;
+      line-height: 1.75;
+      min-height: 300px; /* Even larger! */
+      border-radius: 0.85rem;
+    }
+
+    /* Compact actions row */
+    .paragraph-actions {
+      margin-top: 0.6rem;
+      margin-bottom: 1.2rem; /* SPACE BEFORE BUTTONS */
+      gap: 0.4rem;
+    }
+
+    .copy-btn {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.64rem;
+      margin-top: 0;
+      letter-spacing: 0.05em;
+    }
+
+    .opener-main-btn {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.64rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* 🎯 MINIMAL TEXT-ONLY BUTTONS */
+    .button-grid {
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .stage-button {
+      /* Text-only, no icons, minimal height */
+      padding: 0.5rem 0.7rem;
+      min-height: 36px; /* Minimum height */
+      border-width: 1.5px;
+      border-radius: 0.65rem;
+      justify-content: center;
+    }
+
+    .stage-button-icon {
+      display: none; /* Remove icons */
+    }
+
+    .stage-button-label {
+      font-size: 0.64rem;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+    }
+
+    /* 🎯 MINIMAL NAVIGATION - TIGHT WRAPPER */
+    .review-nav {
+      padding: 0.45rem 0.8rem; /* Minimal padding */
+      gap: 0.55rem;
+      border-radius: 1.8rem;
+      border-width: 1.5px;
+    }
+
+    .nav-arrow {
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      border-width: 1.5px;
+    }
+
+    .nav-dot {
+      width: 9px;
+      height: 9px;
+      border-width: 1.5px;
+    }
+
+    .nav-dots {
+      gap: 0.4rem;
+    }
+
+    /* Mobile modal optimization */
+    .modal-overlay {
+      padding: 0.8rem 0.6rem;
+    }
+
+    .modal-content-card {
+      padding: 1.6rem 1.1rem 1.2rem;
+      border-radius: 1rem;
+      max-height: 92vh;
+    }
+
+    #contentTitle {
+      font-size: 1.1rem;
+      margin-bottom: 0.7rem;
+    }
+
+    #modalContentText {
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+
+    .modal-example-line {
+      gap: 0.45rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .use-sentence-btn {
+      font-size: 0.64rem;
+      padding: 0.18rem 0.55rem;
+    }
+
+    /* Compact opener menu */
+    .opener-menu {
+      min-width: 200px;
+      max-height: 200px;
+      padding: 0.35rem;
+      border-radius: 0.6rem;
+    }
+
+    .opener-option {
+      font-size: 0.68rem;
+      padding: 0.28rem 0.32rem;
+    }
+  }
+
+  /* Extra small screens */
+  @media (max-width: 380px) {
+    body {
+      padding: 0.4rem;
+    }
+
+    .central-card {
+      padding: 1rem 0.7rem 0.8rem;
+    }
+
+    .paragraph-area {
+      padding: 1.1rem 0.9rem;
+      font-size: 0.9rem;
+      min-height: 280px;
+    }
+
+    .stage-button {
+      min-height: 34px;
+      padding: 0.45rem 0.65rem;
+    }
+
+    .stage-button-label {
+      font-size: 0.62rem;
+    }
+
+    .button-grid {
+      gap: 0.3rem;
+    }
+
+    .nav-arrow {
+      width: 30px;
+      height: 30px;
+    }
+
+    .review-nav {
+      padding: 0.4rem 0.7rem;
+    }
+  }
+
+  /* Landscape mobile */
+  @media (max-width: 900px) and (orientation: landscape) {
+    .paragraph-area {
+      min-height: 200px;
+    }
+
+    .header {
+      margin-bottom: 0.4rem;
+    }
+
+    .brand-logo {
+      font-size: 1.2rem;
+    }
+
+    .brand-subtitle {
+      font-size: 0.55rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="main-container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1 class="brand-logo">INTUITY</h1>
+    <p class="brand-subtitle">Sentence → Paragraph Transformation</p>
+    <p class="brand-author">Majid Nashtai</p>
+  </div>
+
+  <!-- CENTRAL CARD -->
+  <div class="central-card">
+
+    <!-- BASE SENTENCE -->
+    <h2 class="central-card-title" id="sentenceBase">Loading…</h2>
+    <p class="central-card-subtitle" id="sentenceSubtitle"></p>
+
+    <!-- GOLD FROSTED SEGMENTED CONTROL (Now below title on mobile) -->
+    <div class="segmented-toggle" id="modeToggle">
+      <div class="segmented-bg"></div>
+
+      <button class="segmented-btn active" data-mode="essays">Essay</button>
+      <button class="segmented-btn" data-mode="reports">Report</button>
+      <button class="segmented-btn" data-mode="reviews">Review</button>
+    </div>
+
+    <!-- PARAGRAPH AREA -->
+    <div id="paragraphArea" class="paragraph-area">
+      Travelling can widen our horizons. ...
+    </div>
+
+    <div class="paragraph-actions">
+      <button id="copyParagraphBtn" class="copy-btn">Copy</button>
+
+      <div class="opener-dropdown">
+        <button id="openerToggleBtn" class="opener-main-btn">
+          Final ▾
+        </button>
+        <div id="openerMenu" class="opener-menu">
+          <!-- options from JSON will appear here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSFORMATION BUTTON GRID -->
+    <div class="button-grid" id="mainButtonGrid">
+      <div class="stage-button" data-transform="explain">
+        <span class="stage-button-icon">💬</span>
+        <span class="stage-button-label">Explain</span>
+      </div>
+      <div class="stage-button" data-transform="reason">
+        <span class="stage-button-icon">⚙️</span>
+        <span class="stage-button-label">Reason</span>
+      </div>
+      <div class="stage-button" data-transform="example">
+        <span class="stage-button-icon">🔍</span>
+        <span class="stage-button-label">Example</span>
+      </div>
+      <div class="stage-button" data-transform="reformulate">
+        <span class="stage-button-icon">🔄</span>
+        <span class="stage-button-label">Reformulate</span>
+      </div>
+      <div class="stage-button" data-transform="result">
+        <span class="stage-button-icon">🎯</span>
+        <span class="stage-button-label">Result</span>
+      </div>
+      <div class="stage-button" data-transform="compare">
+        <span class="stage-button-icon">⚖️</span>
+        <span class="stage-button-label">Compare</span>
+      </div>
+      <div class="stage-button" data-transform="contrast">
+        <span class="stage-button-icon">⚡</span>
+        <span class="stage-button-label">Contrast</span>
+      </div>
+    </div>
+
+    <!-- SENTENCE NAVIGATION -->
+    <div class="review-nav">
+      <button class="nav-arrow" id="prevSentence">←</button>
+      <div class="nav-dots" id="sentenceDots"></div>
+      <button class="nav-arrow" id="nextSentence">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FOR EXAMPLES -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content-card">
+    <button id="modalClose" class="copy-btn" style="float:right;">Close</button>
+    <h2 id="contentTitle" style="margin-bottom:1rem;">Function</h2>
+    <div id="modalContentText">Loading…</div>
+  </div>
+</div>
+    
+<script>
+/* ----------------------------------------------------
+   STATE
+---------------------------------------------------- */
+let sentencesData = [];
+let currentSentenceIndex = 0;
+let currentTransform = 'explain';
+let currentMode = 'essays';
+let paragraphText = "";
+
+// Track which transforms have already been used per sentence
+// { [sentenceIndex]: { explain: true, reason: true, ... } }
+let usedTransforms = {};
+
+/* ----------------------------------------------------
+   PARAGRAPH OPENER SYSTEM (FINAL VERSION)
+---------------------------------------------------- */
+
+let currentOpener = "";
+let openerSets = { essays: [], reports: [], reviews: [] };
+
+// Load opener JSON (runs once)
+async function loadOpeners() {
+  try {
+    const res = await fetch("transformations-opener-sets.json");
+    const data = await res.json();
+
+    openerSets.essays = data.essays.openers || [];
+    openerSets.reports = data.reports.openers || [];
+    openerSets.reviews = data.reviews.openers || [];
+
+    rebuildOpenerMenu();   // build default menu (essays)
+  } catch (e) {
+    console.error("Error loading opener sets:", e);
+  }
+}
+
+// Determine which openers to use based on current mode
+function getOpenersForCurrentMode() {
+  if (currentMode === "reports") return openerSets.reports;
+  if (currentMode === "reviews") return openerSets.reviews;
+  return openerSets.essays;  // default: essays
+}
+
+// Build dropdown dynamically
+function rebuildOpenerMenu() {
+  const menu = document.getElementById("openerMenu");
+  if (!menu) return;
+
+  menu.innerHTML = "";
+
+  const list = getOpenersForCurrentMode();
+
+  list.forEach(opener => {
+    const btn = document.createElement("button");
+    btn.className = "opener-option";
+    btn.textContent = opener + "…";
+
+    btn.addEventListener("click", () => {
+      currentOpener = opener;
+      updateParagraphArea();
+      menu.classList.remove("show");
+    });
+
+    menu.appendChild(btn);
+  });
+}
+
+// Dropdown open/close behaviour
+function setupOpenerDropdown() {
+  const toggle = document.getElementById("openerToggleBtn");
+  const menu = document.getElementById("openerMenu");
+  if (!toggle || !menu) return;
+
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    rebuildOpenerMenu();   // refresh menu when switching modes
+    menu.classList.toggle("show");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".opener-dropdown")) {
+      menu.classList.remove("show");
+    }
+  });
+}
+
+/* ----------------------------------------------------
+   INITIALISE
+---------------------------------------------------- */
+async function init() {
+  attachEventListeners();
+  setupOpenerDropdown();
+  await loadOpeners();
+  await loadMode('essays');  // default mode
+}
+
+/* ----------------------------------------------------
+   LOAD MODE (ESSAY / REPORT / REVIEW)
+---------------------------------------------------- */
+async function loadMode(mode) {
+  currentMode = mode;
+
+  updateSegmentedIndicator(mode);
+
+  const fileMap = {
+    essays: 'transformations.json',
+    reports: 'transformations-reports.json',
+    reviews: 'transformations-reviews.json'
+  };
+
+  const file = fileMap[mode];
+
+  try {
+    const res = await fetch(file);
+    const data = await res.json();
+    sentencesData = data.sentences || [];
+    currentSentenceIndex = 0;
+
+    // reset used transforms for new mode
+    usedTransforms = {};
+
+    updateMainDisplay();
+    renderNavigation();
+  } catch (e) {
+    console.error("Error loading JSON:", e);
+  }
+}
+
+/* ----------------------------------------------------
+   UPDATE MAIN DISPLAY
+---------------------------------------------------- */
+function updateMainDisplay() {
+  const sentenceObj = sentencesData[currentSentenceIndex];
+
+  document.getElementById("sentenceBase").textContent = sentenceObj.base;
+  document.getElementById("sentenceSubtitle").textContent =
+    `${currentSentenceIndex + 1} / ${sentencesData.length}`;
+
+  // Ensure tracking object exists for this sentence
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+
+  // Reset paragraph and opener for this sentence
+  paragraphText = sentenceObj.base;
+  currentOpener = "";
+  
+  updateParagraphArea();
+}
+
+/* ----------------------------------------------------
+   UPDATE PARAGRAPH AREA
+---------------------------------------------------- */
+function updateParagraphArea() {
+  const box = document.getElementById("paragraphArea");
+
+  let output = paragraphText.trim();
+
+  // If an opener is chosen, prepend it
+  if (currentOpener && output) {
+    output = currentOpener + " " + output.charAt(0).toLowerCase() + output.slice(1);
+  }
+
+  box.textContent = output;
+  box.classList.remove("paragraph-area-empty");
+}
+
+/* ----------------------------------------------------
+   ADD SENTENCE TO PARAGRAPH
+   - Only allow one sentence per transform per sentence
+---------------------------------------------------- */
+function addSentenceToParagraph(transformName, index, btn) {
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+
+  // If this transform already used for this sentence, do nothing
+  if (usedTransforms[currentSentenceIndex][transformName]) {
+    return;
+  }
+
+  const sentenceObj = sentencesData[currentSentenceIndex];
+  const list = (sentenceObj.transformations && sentenceObj.transformations[transformName]) || [];
+  const chosen = list[index];
+  if (!chosen) return;
+
+  paragraphText = paragraphText.trim() + " " + chosen.trim();
+  updateParagraphArea();
+
+  // Mark this transform as used for this sentence
+  usedTransforms[currentSentenceIndex][transformName] = true;
+
+  // Visually mark the chosen button
+  if (btn) {
+    // Remove "selected" from any previous buttons in this modal
+    document
+      .querySelectorAll(".use-sentence-btn")
+      .forEach(b => b.classList.remove("selected"));
+
+    // Add class that turns it green + adds checkmark
+    btn.classList.add("selected");
+
+    // Disable all buttons in this modal for this transform
+    const container = document.getElementById("modalContentText");
+    container.querySelectorAll(".use-sentence-btn").forEach(b => {
+      b.disabled = true;
+      b.style.opacity = 0.4;
+      b.style.cursor = "not-allowed";
+    });
+  }
+}
+
+/* ----------------------------------------------------
+   MODAL
+---------------------------------------------------- */
+function openModal(transformName) {
+  currentTransform = transformName;
+  showModalContent(transformName);
+  document.getElementById("modalOverlay").classList.add("show");
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("show");
+}
+
+function showModalContent(transformName) {
+  const s = sentencesData[currentSentenceIndex];
+  const content = (s.transformations && s.transformations[transformName]) || [];
+  const div = document.getElementById("modalContentText");
+
+  document.getElementById("contentTitle").textContent =
+    transformName.toUpperCase();
+
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+  const alreadyUsed = !!usedTransforms[currentSentenceIndex][transformName];
+
+  if (!content.length) {
+    div.innerHTML = "<p>No examples available.</p>";
+    return;
+  }
+
+  // Build the list of options
+  div.innerHTML = content.map((ex, i) =>
+    `<div class="modal-example-line">
+       <span>${i + 1}.</span>
+       <span>${ex}</span>
+       <button class="use-sentence-btn" data-transform="${transformName}" data-index="${i}">
+         ➕ Use
+       </button>
+     </div>`
+  ).join("");
+
+  // Attach behaviour to each button
+  div.querySelectorAll(".use-sentence-btn").forEach(btn => {
+    if (alreadyUsed) {
+      // This transform already chosen for this sentence → block all
+      btn.disabled = true;
+      btn.style.opacity = 0.4;
+      btn.style.cursor = "not-allowed";
+      return;
+    }
+
+    btn.addEventListener("click", () => {
+      const idx = parseInt(btn.dataset.index, 10);
+      addSentenceToParagraph(transformName, idx, btn);
+    });
+  });
+}
+
+/* ----------------------------------------------------
+   SEGMENTED CONTROL SLIDER (GOLD)
+---------------------------------------------------- */
+function updateSegmentedIndicator(mode) {
+  const indicator = document.querySelector('.segmented-bg');
+  const buttons = Array.from(document.querySelectorAll('.segmented-btn'));
+
+  const index = buttons.findIndex(btn => btn.dataset.mode === mode);
+  if (index === -1 || !indicator) return;
+
+  indicator.style.transform = `translateX(${index * 100}%)`;
+
+  buttons.forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.mode === mode)
+  );
+}
+
+/* ----------------------------------------------------
+   NAVIGATION (ARROWS & DOTS)
+---------------------------------------------------- */
+function renderNavigation() {
+  const container = document.getElementById("sentenceDots");
+  container.innerHTML = "";
+
+  sentencesData.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "nav-dot" + (i === currentSentenceIndex ? " active" : "");
+    dot.addEventListener("click", () => goToSentence(i));
+    container.appendChild(dot);
+  });
+}
+
+function goToSentence(i) {
+  currentSentenceIndex = i;
+
+  // ensure we have a tracking entry for this sentence
+  if (!usedTransforms[currentSentenceIndex]) {
+    usedTransforms[currentSentenceIndex] = {};
+  }
+
+  updateMainDisplay();
+  renderNavigation();
+}
+
+function changeSentence(direction) {
+  const newIndex = currentSentenceIndex + direction;
+  if (newIndex < 0 || newIndex >= sentencesData.length) return;
+  goToSentence(newIndex);
+}
+
+/* ----------------------------------------------------
+   EVENT LISTENERS
+---------------------------------------------------- */
+function attachEventListeners() {
+  // transformation buttons (Explain, Reason, etc.)
+  document.querySelectorAll('.stage-button').forEach(btn =>
+    btn.addEventListener("click", () => openModal(btn.dataset.transform))
+  );
+
+  // modal close
+  document.getElementById("modalClose").addEventListener("click", closeModal);
+  document.getElementById("modalOverlay").addEventListener("click", e => {
+    if (e.target.id === "modalOverlay") closeModal();
+  });
+
+  // sentence navigation arrows
+  document.getElementById("prevSentence").addEventListener("click", () => changeSentence(-1));
+  document.getElementById("nextSentence").addEventListener("click", () => changeSentence(1));
+
+  // segmented control
+  document.querySelectorAll(".segmented-btn").forEach(btn =>
+    btn.addEventListener("click", () => loadMode(btn.dataset.mode))
+  );
+
+  // copy paragraph (includes opener if present)
+  document.getElementById("copyParagraphBtn").addEventListener("click", () => {
+    let output = paragraphText.trim();
+    if (currentOpener && output) {
+      output = currentOpener + " " + output.charAt(0).toLowerCase() + output.slice(1);
+    }
+    if (!output) return;
+    navigator.clipboard.writeText(output);
+  });
+}
+
+/* ----------------------------------------------------
+   START
+---------------------------------------------------- */
+init();
+</script>
+</body>
+</html>graph Builder</title>
 
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap"
