@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INTUITY – Paragraph Builder</title>
 
   <link
@@ -48,6 +48,7 @@
       width: 100%;
     }
 
+    /* HEADER */
     .header {
       text-align: center;
       margin-bottom: 2.2rem;
@@ -72,7 +73,6 @@
       font-weight: 600;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      margin-bottom: 0.25rem;
     }
 
     .brand-author {
@@ -95,13 +95,14 @@
       overflow: hidden;
       margin-bottom: 2.25rem;
       width: 100%;
+      position: relative; /* REQUIRED for toggle positioning */
     }
 
     .central-card-title {
       font-family: 'Playfair Display', serif;
       font-size: 1.9rem;
       color: #F3E7C0;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
       text-align: left;
     }
 
@@ -114,38 +115,72 @@
       text-align: left;
     }
 
-    /* MODE TOGGLE */
-    .mode-toggle {
+    /* 🍾 SOFT-BLUR GOLD SEGMENTED CONTROL */
+    .segmented-toggle {
+      position: absolute;
+      top: 1.1rem;
+      right: 1.1rem;
+
       display: inline-flex;
-      gap: 0.4rem;
+      align-items: center;
+
+      /* Glass effect */
+      background: rgba(20, 20, 22, 0.32);
+      backdrop-filter: blur(5px);          /* ★ soft blur */
+      -webkit-backdrop-filter: blur(5px);  /* Safari support */
+      border: 1px solid rgba(201,169,97,0.35);
+
       border-radius: 999px;
       padding: 0.25rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(201, 169, 97, 0.4);
-      margin: 0 0 1rem 0;
+      height: 38px;
+      z-index: 20;
     }
 
-    .mode-btn {
-      border: none;
+    .segmented-bg {
+      position: absolute;
+      height: calc(100% - 6px);
+      top: 3px;
+      left: 3px;
+      width: calc((100% - 6px) / 3); /* 3 buttons */
       border-radius: 999px;
-      padding: 0.35rem 0.9rem;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      background: transparent;
-      color: #e5e5ea;
-      cursor: pointer;
-      transition: all 0.25s;
-    }
 
-    .mode-btn:hover {
-      background: rgba(250, 204, 21, 0.06);
-    }
-
-    .mode-btn.active {
       background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
-      color: #111827;
-      box-shadow: 0 0 15px rgba(201, 169, 97, 0.7);
+      box-shadow: 0 0 15px rgba(201, 169, 97, 0.3);
+
+      transition: transform 0.25s ease;
+      z-index: 0;
+    }
+
+    .segmented-btn {
+      position: relative;
+      border: none;
+      background: transparent;
+      padding: 0 1rem;
+      height: 100%;
+
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+
+      color: #e5e5ea;
+      border-radius: 999px;
+      cursor: pointer;
+
+      z-index: 2;
+      transition: color 0.25s;
+    }
+
+    .segmented-btn.active {
+      color: #111;
+    }
+
+    @media (max-width: 600px) {
+      .segmented-toggle {
+        transform: scale(0.85);
+        top: 0.7rem;
+        right: 0.7rem;
+      }
     }
 
     /* PARAGRAPH AREA */
@@ -181,7 +216,7 @@
       transition: all 0.25s;
     }
 
-    /* FUNCTION BUTTONS */
+    /* BUTTON GRID (Explain / Reason / Example / ...) */
     .button-grid {
       display: flex;
       gap: 0.75rem;
@@ -197,128 +232,13 @@
       padding: 1rem 1.25rem;
       cursor: pointer;
       transition: all 0.3s;
-      position: relative;
       display: flex;
       align-items: center;
       gap: 0.625rem;
     }
-
-    .stage-button:hover {
-      border-color: #C9A961;
-      transform: translateY(-3px);
-    }
-
-    .stage-button.disabled {
-      opacity: 0.25;
-      cursor: not-allowed;
-    }
-
-    .stage-button-icon {
-      font-size: 1.4rem;
-      line-height: 1;
-    }
-
-    .stage-button-label {
-      font-size: 0.78rem;
-      letter-spacing: 0.05em;
-      color: #cbd5e1;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    /* NAVIGATION */
-    .review-nav {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem 2rem;
-      background: rgba(28, 28, 30, 0.8);
-      border: 2px solid rgba(201, 169, 97, 0.3);
-      border-radius: 3rem;
-    }
-
-    .nav-arrow {
-      width: 40px;
-      height: 40px;
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid rgba(201, 169, 97, 0.4);
-      border-radius: 999px;
-      color: #C9A961;
-      font-size: 1.25rem;
-      cursor: pointer;
-    }
-
-    .nav-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.3);
-      border: 2px solid rgba(201, 169, 97, 0.5);
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .nav-dot.active {
-      background: #C9A961;
-      box-shadow: 0 0 15px rgba(201, 169, 97, 0.8);
-    }
-
-    /* MODAL OVERLAY */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.93);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      z-index: 2000;
-      overflow-y: auto;
-    }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
-    .modal-content-card {
-  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-  border-radius: 2rem;
-  padding: 3rem;
-  max-width: 900px;
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  border: 3px solid rgba(201, 169, 97, 0.6);
-  color: #e5e7eb; /* makes sentences bright and readable */
-  box-shadow:
-    0 0 20px rgba(201, 169, 97, 0.3),
-    0 30px 80px rgba(0, 0, 0, 0.9);
-}
-
-    .modal-example-line {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .use-sentence-btn {
-      border-radius: 999px;
-      background: #ecfdf5;
-      color: #15803d;
-      padding: 0.25rem 0.7rem;
-      font-size: 0.75rem;
-      cursor: pointer;
-      border: 1px solid #16a34a;
-    }
   </style>
 </head>
-
-<body>
+  <body>
 
 <div class="main-container">
 
@@ -332,25 +252,29 @@
   <!-- CENTRAL CARD -->
   <div class="central-card">
 
+    <!-- GOLD FROSTED SEGMENTED CONTROL -->
+    <div class="segmented-toggle" id="modeToggle">
+      <div class="segmented-bg"></div>
+
+      <button class="segmented-btn active" data-mode="essays">Essay</button>
+      <button class="segmented-btn" data-mode="reports">Report</button>
+      <button class="segmented-btn" data-mode="reviews">Review</button>
+    </div>
+
+    <!-- BASE SENTENCE -->
     <h2 class="central-card-title" id="sentenceBase">Loading…</h2>
     <p class="central-card-subtitle" id="sentenceSubtitle"></p>
-
-    <!-- MODE TOGGLE -->
-    <div class="mode-toggle" id="modeToggle">
-      <button class="mode-btn active" data-mode="essays">Essay</button>
-      <button class="mode-btn" data-mode="reports">Report</button>
-      <button class="mode-btn" data-mode="reviews">Review</button>
-    </div>
 
     <!-- PARAGRAPH AREA -->
     <div id="paragraphArea" class="paragraph-area paragraph-area-empty">
       Your paragraph will appear here as you add sentences.
     </div>
 
+    <!-- COPY BUTTON -->
     <button id="copyParagraphBtn" class="copy-btn">📋 Copy</button>
   </div>
 
-  <!-- FUNCTION BUTTONS -->
+  <!-- TRANSFORMATION BUTTON GRID -->
   <div class="button-grid" id="mainButtonGrid">
     <div class="stage-button" data-transform="explain">
       <span class="stage-button-icon">💬</span>
@@ -382,7 +306,7 @@
     </div>
   </div>
 
-  <!-- NAVIGATION -->
+  <!-- SENTENCE NAVIGATION -->
   <div class="review-nav">
     <button class="nav-arrow" id="prevSentence">←</button>
     <div class="nav-dots" id="sentenceDots"></div>
@@ -390,7 +314,7 @@
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL FOR EXAMPLES -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-content-card">
     <button id="modalClose" class="copy-btn" style="float:right;">Close</button>
@@ -398,29 +322,31 @@
     <div id="modalContentText">Loading…</div>
   </div>
 </div>
-
-
 <script>
-/* ----------- STATE ----------- */
+/* ----------------------------------------------------
+   STATE
+---------------------------------------------------- */
 let sentencesData = [];
 let currentSentenceIndex = 0;
 let currentTransform = 'explain';
 let currentMode = 'essays';
 let paragraphText = "";
 
-/* ----------- INIT ----------- */
+/* ----------------------------------------------------
+   INITIALISE
+---------------------------------------------------- */
 async function init() {
   attachEventListeners();
   await loadMode('essays'); // default
 }
 
-/* ----------- LOAD MODE ----------- */
+/* ----------------------------------------------------
+   LOAD MODE (ESSAY / REPORT / REVIEW)
+---------------------------------------------------- */
 async function loadMode(mode) {
   currentMode = mode;
 
-  document.querySelectorAll('.mode-btn').forEach(btn =>
-    btn.classList.toggle('active', btn.dataset.mode === mode)
-  );
+  updateSegmentedIndicator(mode);
 
   const fileMap = {
     essays: 'transformations.json',
@@ -438,37 +364,49 @@ async function loadMode(mode) {
     updateMainDisplay();
     renderNavigation();
   } catch (e) {
-    console.error(e);
+    console.error("Error loading JSON:", e);
   }
 }
 
-/* ----------- RENDER MAIN ----------- */
+/* ----------------------------------------------------
+   UPDATE MAIN DISPLAY
+---------------------------------------------------- */
 function updateMainDisplay() {
-  const s = sentencesData[currentSentenceIndex];
-  document.getElementById("sentenceBase").textContent = s.base;
+  const sentenceObj = sentencesData[currentSentenceIndex];
+
+  document.getElementById("sentenceBase").textContent = sentenceObj.base;
   document.getElementById("sentenceSubtitle").textContent =
     `${currentSentenceIndex + 1} / ${sentencesData.length}`;
 
-  paragraphText = s.base;
+  // reset paragraph
+  paragraphText = sentenceObj.base;
   updateParagraphArea();
 }
 
+/* ----------------------------------------------------
+   UPDATE PARAGRAPH
+---------------------------------------------------- */
 function updateParagraphArea() {
   const box = document.getElementById("paragraphArea");
   box.textContent = paragraphText;
   box.classList.remove("paragraph-area-empty");
 }
 
-/* ----------- ADD SENTENCE ----------- */
+/* ----------------------------------------------------
+   ADD SENTENCE TO PARAGRAPH
+---------------------------------------------------- */
 function addSentenceToParagraph(transformName, index) {
-  const s = sentencesData[currentSentenceIndex];
-  const list = s.transformations[transformName];
+  const sentenceObj = sentencesData[currentSentenceIndex];
+  const list = sentenceObj.transformations[transformName];
   const chosen = list[index];
+
   paragraphText = paragraphText.trim() + " " + chosen.trim();
   updateParagraphArea();
 }
 
-/* ----------- MODAL ----------- */
+/* ----------------------------------------------------
+   MODAL
+---------------------------------------------------- */
 function openModal(transformName) {
   currentTransform = transformName;
   showModalContent(transformName);
@@ -479,11 +417,13 @@ function closeModal() {
   document.getElementById("modalOverlay").classList.remove("show");
 }
 
-function showModalContent(t) {
+function showModalContent(transformName) {
   const s = sentencesData[currentSentenceIndex];
-  const content = s.transformations[t] || [];
+  const content = s.transformations[transformName] || [];
   const div = document.getElementById("modalContentText");
-  document.getElementById("contentTitle").textContent = t.toUpperCase();
+
+  document.getElementById("contentTitle").textContent =
+    transformName.toUpperCase();
 
   div.innerHTML = content.length === 0
     ? "<p>No examples available.</p>"
@@ -491,7 +431,9 @@ function showModalContent(t) {
         `<div class="modal-example-line">
            <span>${i + 1}.</span>
            <span>${ex}</span>
-           <button class="use-sentence-btn" data-transform="${t}" data-index="${i}">➕ Use</button>
+           <button class="use-sentence-btn" data-transform="${transformName}" data-index="${i}">
+             ➕ Use
+           </button>
          </div>`
       ).join("");
 
@@ -502,7 +444,25 @@ function showModalContent(t) {
   );
 }
 
-/* ----------- NAVIGATION ----------- */
+/* ----------------------------------------------------
+   SEGMENTED CONTROL SLIDER (GOLD)
+---------------------------------------------------- */
+function updateSegmentedIndicator(mode) {
+  const indicator = document.querySelector('.segmented-bg');
+  const buttons = Array.from(document.querySelectorAll('.segmented-btn'));
+
+  const index = buttons.findIndex(btn => btn.dataset.mode === mode);
+
+  indicator.style.transform = `translateX(${index * 100}%)`;
+
+  buttons.forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.mode === mode)
+  );
+}
+
+/* ----------------------------------------------------
+   NAVIGATION (ARROWS & DOTS)
+---------------------------------------------------- */
 function renderNavigation() {
   const container = document.getElementById("sentenceDots");
   container.innerHTML = "";
@@ -521,30 +481,37 @@ function goToSentence(i) {
   renderNavigation();
 }
 
-function changeSentence(dir) {
-  const newIndex = currentSentenceIndex + dir;
+function changeSentence(direction) {
+  const newIndex = currentSentenceIndex + direction;
   if (newIndex < 0 || newIndex >= sentencesData.length) return;
   goToSentence(newIndex);
 }
 
-/* ----------- EVENT LISTENERS ----------- */
+/* ----------------------------------------------------
+   EVENT LISTENERS
+---------------------------------------------------- */
 function attachEventListeners() {
+  // transformation buttons
   document.querySelectorAll('.stage-button').forEach(btn =>
     btn.addEventListener("click", () => openModal(btn.dataset.transform))
   );
 
+  // modal close
   document.getElementById("modalClose").addEventListener("click", closeModal);
   document.getElementById("modalOverlay").addEventListener("click", e => {
     if (e.target.id === "modalOverlay") closeModal();
   });
 
+  // arrows
   document.getElementById("prevSentence").addEventListener("click", () => changeSentence(-1));
   document.getElementById("nextSentence").addEventListener("click", () => changeSentence(1));
 
-  document.querySelectorAll(".mode-btn").forEach(btn =>
+  // segmented control
+  document.querySelectorAll(".segmented-btn").forEach(btn =>
     btn.addEventListener("click", () => loadMode(btn.dataset.mode))
   );
 
+  // copy button
   document.getElementById("copyParagraphBtn").addEventListener("click", () => {
     navigator.clipboard.writeText(paragraphText);
   });
@@ -555,3 +522,4 @@ init();
 
 </body>
 </html>
+
