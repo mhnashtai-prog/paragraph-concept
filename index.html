@@ -420,6 +420,73 @@
     color: white;
   }
 
+  /* PARAGRAPH ACTIONS */
+  .paragraph-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .opener-main-btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 169, 97, 0.7);
+    background: rgba(24, 24, 27, 0.95);
+    color: #FDE68A;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .opener-main-btn:hover {
+    background: rgba(250, 204, 21, 0.12);
+  }
+
+  .opener-dropdown {
+    position: relative;
+  }
+
+  .opener-menu {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background: rgba(15, 23, 42, 0.98);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(201,169,97,0.4);
+    padding: 0.5rem;
+    min-width: 260px;
+    max-height: 260px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+  }
+
+  .opener-menu.show {
+    display: block;
+  }
+
+  .opener-option {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.78rem;
+    color: #E5E7EB;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+  }
+
+  .opener-option:hover {
+    background: rgba(201,169,97,0.18);
+  }
+
   /* MOBILE TWEAKS */
   @media (max-width: 768px) {
     body {
@@ -449,7 +516,7 @@
       gap: 0.3rem;
     }
 
-      .stage-button-label {
+    .stage-button-label {
       font-size: 0.65rem;
     }
 
@@ -457,81 +524,9 @@
       padding: 2.2rem 1.6rem 1.8rem;
     }
   }
-
-/* ⬇⬇ NEW STYLES – OUTSIDE @media ⬇⬇ */
-.paragraph-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.opener-main-btn {
-  padding: 0.55rem 1.2rem;
-  border-radius: 999px;
-  border: 1px solid rgba(201, 169, 97, 0.7);
-  background: rgba(24, 24, 27, 0.95);
-  color: #FDE68A;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-.opener-main-btn:hover {
-  background: rgba(250, 204, 21, 0.12);
-}
-
-.opener-dropdown {
-  position: relative;
-}
-
-.opener-menu {
-  position: absolute;
-  right: 0;
-  top: 110%;
-  background: rgba(15, 23, 42, 0.98);
-  border-radius: 0.75rem;
-  border: 1px solid rgba(201,169,97,0.4);
-  padding: 0.5rem;
-  min-width: 260px;
-  max-height: 260px;
-  overflow-y: auto;
-  display: none;
-  z-index: 1000;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.7);
-}
-
-.opener-menu.show {
-  display: block;
-}
-
-.opener-option {
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  padding: 0.35rem 0.4rem;
-  font-size: 0.78rem;
-  color: #E5E7EB;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: background 0.2s;
-}
-
-.opener-option:hover {
-  background: rgba(201,169,97,0.18);
-}
-
-    .modal-content-card {
-      padding: 2.2rem 1.6rem 1.8rem;
-    }
-  }
 </style>
 </head>
-  <body>
+<body>
 
 <div class="main-container">
 
@@ -559,61 +554,61 @@
     <p class="central-card-subtitle" id="sentenceSubtitle"></p>
 
     <!-- PARAGRAPH AREA -->
-   <div id="paragraphArea" class="paragraph-area">
-  Travelling can widen our horizons. ...
-</div>
+    <div id="paragraphArea" class="paragraph-area">
+      Travelling can widen our horizons. ...
+    </div>
 
-<div class="paragraph-actions">
-  <button id="copyParagraphBtn" class="copy-btn">Copy</button>
+    <div class="paragraph-actions">
+      <button id="copyParagraphBtn" class="copy-btn">Copy</button>
 
-  <div class="opener-dropdown">
-    <button id="openerToggleBtn" class="opener-main-btn">
-      Final version ▾
-    </button>
-    <div id="openerMenu" class="opener-menu">
-      <!-- options from JSON will appear here -->
+      <div class="opener-dropdown">
+        <button id="openerToggleBtn" class="opener-main-btn">
+          Final version ▾
+        </button>
+        <div id="openerMenu" class="opener-menu">
+          <!-- options from JSON will appear here -->
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
+    <!-- TRANSFORMATION BUTTON GRID -->
+    <div class="button-grid" id="mainButtonGrid">
+      <div class="stage-button" data-transform="explain">
+        <span class="stage-button-icon">💬</span>
+        <span class="stage-button-label">Explain</span>
+      </div>
+      <div class="stage-button" data-transform="reason">
+        <span class="stage-button-icon">⚙️</span>
+        <span class="stage-button-label">Reason</span>
+      </div>
+      <div class="stage-button" data-transform="example">
+        <span class="stage-button-icon">🔍</span>
+        <span class="stage-button-label">Example</span>
+      </div>
+      <div class="stage-button" data-transform="reformulate">
+        <span class="stage-button-icon">🔄</span>
+        <span class="stage-button-label">Reformulate</span>
+      </div>
+      <div class="stage-button" data-transform="result">
+        <span class="stage-button-icon">🎯</span>
+        <span class="stage-button-label">Result</span>
+      </div>
+      <div class="stage-button" data-transform="compare">
+        <span class="stage-button-icon">⚖️</span>
+        <span class="stage-button-label">Compare</span>
+      </div>
+      <div class="stage-button" data-transform="contrast">
+        <span class="stage-button-icon">⚡</span>
+        <span class="stage-button-label">Contrast</span>
+      </div>
+    </div>
 
-  <!-- TRANSFORMATION BUTTON GRID -->
-  <div class="button-grid" id="mainButtonGrid">
-    <div class="stage-button" data-transform="explain">
-      <span class="stage-button-icon">💬</span>
-      <span class="stage-button-label">Explain</span>
+    <!-- SENTENCE NAVIGATION -->
+    <div class="review-nav">
+      <button class="nav-arrow" id="prevSentence">←</button>
+      <div class="nav-dots" id="sentenceDots"></div>
+      <button class="nav-arrow" id="nextSentence">→</button>
     </div>
-    <div class="stage-button" data-transform="reason">
-      <span class="stage-button-icon">⚙️</span>
-      <span class="stage-button-label">Reason</span>
-    </div>
-    <div class="stage-button" data-transform="example">
-      <span class="stage-button-icon">🔍</span>
-      <span class="stage-button-label">Example</span>
-    </div>
-    <div class="stage-button" data-transform="reformulate">
-      <span class="stage-button-icon">🔄</span>
-      <span class="stage-button-label">Reformulate</span>
-    </div>
-    <div class="stage-button" data-transform="result">
-      <span class="stage-button-icon">🎯</span>
-      <span class="stage-button-label">Result</span>
-    </div>
-    <div class="stage-button" data-transform="compare">
-      <span class="stage-button-icon">⚖️</span>
-      <span class="stage-button-label">Compare</span>
-    </div>
-    <div class="stage-button" data-transform="contrast">
-      <span class="stage-button-icon">⚡</span>
-      <span class="stage-button-label">Contrast</span>
-    </div>
-  </div>
-
-  <!-- SENTENCE NAVIGATION -->
-  <div class="review-nav">
-    <button class="nav-arrow" id="prevSentence">←</button>
-    <div class="nav-dots" id="sentenceDots"></div>
-    <button class="nav-arrow" id="nextSentence">→</button>
   </div>
 </div>
 
@@ -641,11 +636,86 @@ let paragraphText = "";
 let usedTransforms = {};
 
 /* ----------------------------------------------------
+   PARAGRAPH OPENER SYSTEM (FINAL VERSION)
+---------------------------------------------------- */
+
+let currentOpener = "";
+let openerSets = { essays: [], reports: [], reviews: [] };
+
+// Load opener JSON (runs once)
+async function loadOpeners() {
+  try {
+    const res = await fetch("transformations-opener-sets.json");
+    const data = await res.json();
+
+    openerSets.essays = data.essays.openers || [];
+    openerSets.reports = data.reports.openers || [];
+    openerSets.reviews = data.reviews.openers || [];
+
+    rebuildOpenerMenu();   // build default menu (essays)
+  } catch (e) {
+    console.error("Error loading opener sets:", e);
+  }
+}
+
+// Determine which openers to use based on current mode
+function getOpenersForCurrentMode() {
+  if (currentMode === "reports") return openerSets.reports;
+  if (currentMode === "reviews") return openerSets.reviews;
+  return openerSets.essays;  // default: essays
+}
+
+// Build dropdown dynamically
+function rebuildOpenerMenu() {
+  const menu = document.getElementById("openerMenu");
+  if (!menu) return;
+
+  menu.innerHTML = "";
+
+  const list = getOpenersForCurrentMode();
+
+  list.forEach(opener => {
+    const btn = document.createElement("button");
+    btn.className = "opener-option";
+    btn.textContent = opener + "…";
+
+    btn.addEventListener("click", () => {
+      currentOpener = opener;
+      updateParagraphArea();
+      menu.classList.remove("show");
+    });
+
+    menu.appendChild(btn);
+  });
+}
+
+// Dropdown open/close behaviour
+function setupOpenerDropdown() {
+  const toggle = document.getElementById("openerToggleBtn");
+  const menu = document.getElementById("openerMenu");
+  if (!toggle || !menu) return;
+
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    rebuildOpenerMenu();   // refresh menu when switching modes
+    menu.classList.toggle("show");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".opener-dropdown")) {
+      menu.classList.remove("show");
+    }
+  });
+}
+
+/* ----------------------------------------------------
    INITIALISE
 ---------------------------------------------------- */
 async function init() {
   attachEventListeners();
-  await loadMode('essays'); // default mode
+  setupOpenerDropdown();
+  await loadOpeners();
+  await loadMode('essays');  // default mode
 }
 
 /* ----------------------------------------------------
@@ -695,8 +765,10 @@ function updateMainDisplay() {
     usedTransforms[currentSentenceIndex] = {};
   }
 
-  // Reset paragraph for this sentence
+  // Reset paragraph and opener for this sentence
   paragraphText = sentenceObj.base;
+  currentOpener = "";
+  
   updateParagraphArea();
 }
 
@@ -705,7 +777,15 @@ function updateMainDisplay() {
 ---------------------------------------------------- */
 function updateParagraphArea() {
   const box = document.getElementById("paragraphArea");
-  box.textContent = paragraphText;
+
+  let output = paragraphText.trim();
+
+  // If an opener is chosen, prepend it
+  if (currentOpener && output) {
+    output = currentOpener + " " + output.charAt(0).toLowerCase() + output.slice(1);
+  }
+
+  box.textContent = output;
   box.classList.remove("paragraph-area-empty");
 }
 
@@ -887,10 +967,14 @@ function attachEventListeners() {
     btn.addEventListener("click", () => loadMode(btn.dataset.mode))
   );
 
-  // copy paragraph
+  // copy paragraph (includes opener if present)
   document.getElementById("copyParagraphBtn").addEventListener("click", () => {
-    if (!paragraphText.trim()) return;
-    navigator.clipboard.writeText(paragraphText);
+    let output = paragraphText.trim();
+    if (currentOpener && output) {
+      output = currentOpener + " " + output.charAt(0).toLowerCase() + output.slice(1);
+    }
+    if (!output) return;
+    navigator.clipboard.writeText(output);
   });
 }
 
