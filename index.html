@@ -95,7 +95,7 @@
     overflow: hidden;
     margin-bottom: 2.25rem;
     width: 100%;
-    position: relative; /* required for toggle positioning */
+    position: relative;
   }
 
   .central-card-title {
@@ -115,7 +115,7 @@
     text-align: left;
   }
 
-  /* 🍾 FROSTED GLASS GOLD SEGMENTED CONTROL */
+  /* FROSTED GLASS GOLD SEGMENTED CONTROL */
   .segmented-toggle {
     position: absolute;
     top: 1.1rem;
@@ -172,14 +172,6 @@
 
   .segmented-btn.active {
     color: #111;
-  }
-
-  @media (max-width: 600px) {
-    .segmented-toggle {
-      transform: scale(0.85);
-      top: 0.7rem;
-      right: 0.7rem;
-    }
   }
 
   /* PARAGRAPH AREA */
@@ -375,7 +367,7 @@
     flex: 1;
   }
 
-  /* USE BUTTON (with hover, selected + ✔, and press animation) */
+  /* USE BUTTON */
   .use-sentence-btn {
     border-radius: 999px;
     background: #ecfdf5;
@@ -395,13 +387,11 @@
     transform: translateY(-1px);
   }
 
-  /* Press click effect */
   .use-sentence-btn:active {
     transform: scale(0.96) translateY(0);
     box-shadow: 0 0 4px rgba(22, 163, 74, 0.4);
   }
 
-  /* Selected button + checkmark ✔ */
   .use-sentence-btn.selected {
     background: #16a34a !important;
     color: white !important;
@@ -487,41 +477,212 @@
     background: rgba(201,169,97,0.18);
   }
 
-  /* MOBILE TWEAKS */
+  /* ========================================
+     MOBILE OPTIMIZATION - MAXIMUM SPACE
+     ======================================== */
   @media (max-width: 768px) {
     body {
-      padding: 1.2rem 1rem;
-      padding-top: 1.6rem;
+      padding: 0.75rem 0.65rem;
+      padding-top: 0.75rem;
+      align-items: flex-start;
     }
 
+    /* Compact header */
+    .header {
+      margin-bottom: 1rem;
+    }
+
+    .brand-logo {
+      font-size: 1.8rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .brand-subtitle {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+    }
+
+    .brand-author {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* Ultra-compact segmented control */
+    .segmented-toggle {
+      transform: scale(0.75);
+      top: 0.4rem;
+      right: 0.4rem;
+    }
+
+    /* Reduced card padding */
     .central-card {
-      padding: 2.4rem 1.5rem 2.1rem;
+      padding: 1.8rem 1rem 1.2rem;
+      border-radius: 1.2rem;
+      border-width: 2px;
+      margin-bottom: 1.2rem;
     }
 
+    /* Compact title */
     .central-card-title {
-      font-size: 1.6rem;
+      font-size: 1.3rem;
+      margin-bottom: 0.2rem;
+      line-height: 1.3;
     }
 
+    .central-card-subtitle {
+      font-size: 0.75rem;
+      margin-bottom: 0.7rem;
+    }
+
+    /* MAXIMUM PARAGRAPH AREA */
     .paragraph-area {
-      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      padding: 1rem 1.1rem;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      min-height: 180px;
+      border-radius: 0.85rem;
     }
 
+    /* Compact paragraph actions */
+    .paragraph-actions {
+      margin-top: 0.65rem;
+      gap: 0.5rem;
+    }
+
+    .copy-btn {
+      padding: 0.45rem 0.9rem;
+      font-size: 0.68rem;
+      margin-top: 0;
+    }
+
+    .opener-main-btn {
+      padding: 0.45rem 0.9rem;
+      font-size: 0.68rem;
+    }
+
+    /* Ultra-compact transformation buttons */
     .button-grid {
-      gap: 0.4rem;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+      margin-top: 0.7rem;
     }
 
     .stage-button {
-      padding: 0.8rem 0.8rem;
+      padding: 0.6rem 0.65rem;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.25rem;
+      border-width: 2px;
+      border-radius: 0.65rem;
+      min-width: 62px;
+    }
+
+    .stage-button-icon {
+      font-size: 1.15rem;
     }
 
     .stage-button-label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* Compact navigation */
+    .review-nav {
+      padding: 0.65rem 1.2rem;
+      gap: 0.7rem;
+      border-radius: 2rem;
+      border-width: 1.5px;
+    }
+
+    .nav-arrow {
+      width: 34px;
+      height: 34px;
+      font-size: 1.1rem;
+      border-width: 1.5px;
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-width: 1.5px;
+    }
+
+    .nav-dots {
+      gap: 0.45rem;
+    }
+
+    /* Mobile modal optimization */
+    .modal-overlay {
+      padding: 1rem 0.75rem;
     }
 
     .modal-content-card {
-      padding: 2.2rem 1.6rem 1.8rem;
+      padding: 1.8rem 1.2rem 1.4rem;
+      border-radius: 1.2rem;
+      max-height: 90vh;
+    }
+
+    #contentTitle {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    #modalContentText {
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+
+    .modal-example-line {
+      gap: 0.5rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .use-sentence-btn {
+      font-size: 0.68rem;
+      padding: 0.2rem 0.6rem;
+    }
+
+    /* Compact opener menu */
+    .opener-menu {
+      min-width: 220px;
+      max-height: 220px;
+      padding: 0.4rem;
+      border-radius: 0.65rem;
+    }
+
+    .opener-option {
+      font-size: 0.72rem;
+      padding: 0.3rem 0.35rem;
+    }
+  }
+
+  /* Extra compact for very small screens */
+  @media (max-width: 380px) {
+    body {
+      padding: 0.6rem 0.5rem;
+    }
+
+    .central-card {
+      padding: 1.5rem 0.85rem 1rem;
+    }
+
+    .paragraph-area {
+      padding: 0.9rem;
+      font-size: 0.88rem;
+      min-height: 160px;
+    }
+
+    .stage-button {
+      min-width: 58px;
+      padding: 0.55rem 0.6rem;
+    }
+
+    .stage-button-icon {
+      font-size: 1.05rem;
+    }
+
+    .stage-button-label {
+      font-size: 0.58rem;
     }
   }
 </style>
