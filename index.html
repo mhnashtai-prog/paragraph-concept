@@ -11,232 +11,428 @@
   />
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    color: #e5e5e7;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    padding-top: 3rem;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.08) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 2.2rem;
+  }
+
+  .brand-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+    text-shadow: 0 0 40px rgba(201, 169, 97, 0.3);
+  }
+
+  .brand-subtitle {
+    font-size: 0.95rem;
+    color: #8e8e93;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .brand-author {
+    font-size: 0.8rem;
+    color: #a1a1aa;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* CENTRAL CARD */
+  .central-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+    border: 3px solid #C9A961;
+    border-radius: 2rem;
+    padding: 2.8rem 2.4rem 2.4rem;
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.8),
+      0 0 60px rgba(201, 169, 97, 0.3),
+      inset 0 1px 0 rgba(201, 169, 97, 0.2);
+    overflow: hidden;
+    margin-bottom: 2.25rem;
+    width: 100%;
+    position: relative; /* for toggle positioning */
+  }
+
+  .central-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    color: #F3E7C0;
+    margin-bottom: 0.3rem;
+    text-align: left;
+  }
+
+  .central-card-subtitle {
+    font-size: 0.9rem;
+    color: #cbd5f5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  /* 🍾 SOFT-BLUR GOLD SEGMENTED CONTROL */
+  .segmented-toggle {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
+
+    display: inline-flex;
+    align-items: center;
+
+    background: rgba(20, 20, 22, 0.32);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(201,169,97,0.35);
+
+    border-radius: 999px;
+    padding: 0.25rem;
+    height: 38px;
+    z-index: 20;
+  }
+
+  .segmented-bg {
+    position: absolute;
+    height: calc(100% - 6px);
+    top: 3px;
+    left: 3px;
+    width: calc((100% - 6px) / 3); /* 3 buttons */
+    border-radius: 999px;
+
+    background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+    box-shadow: 0 0 15px rgba(201, 169, 97, 0.3);
+
+    transition: transform 0.25s ease;
+    z-index: 0;
+  }
+
+  .segmented-btn {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 0 1rem;
+    height: 100%;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    color: #e5e5ea;
+    border-radius: 999px;
+    cursor: pointer;
+
+    z-index: 2;
+    transition: color 0.25s;
+  }
+
+  .segmented-btn.active {
+    color: #111;
+  }
+
+  @media (max-width: 600px) {
+    .segmented-toggle {
+      transform: scale(0.85);
+      top: 0.7rem;
+      right: 0.7rem;
+    }
+  }
+
+  /* PARAGRAPH AREA */
+  .paragraph-area {
+    margin-top: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(201, 169, 97, 0.35);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #e5e7eb;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .paragraph-area-empty {
+    font-style: italic;
+    color: #9ca3af;
+  }
+
+  /* COPY BUTTON */
+  .copy-btn {
+    margin-top: 1rem;
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 169, 97, 0.6);
+    background: rgba(24, 24, 27, 0.95);
+    color: #FDE68A;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .copy-btn:hover {
+    background: rgba(250, 204, 21, 0.14);
+  }
+
+  /* TRANSFORM BUTTONS */
+  .button-grid {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .stage-button {
+    background: linear-gradient(135deg, rgba(28, 28, 30, 0.95), rgba(20, 20, 22, 0.95));
+    border: 3px solid rgba(201, 169, 97, 0.4);
+    border-radius: 0.875rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .stage-button:hover {
+    border-color: #C9A961;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(201, 169, 97, 0.3);
+  }
+
+  .stage-button.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .stage-button-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .stage-button-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* NAVIGATION */
+  .review-nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    background: rgba(28, 28, 30, 0.8);
+    border: 2px solid rgba(201, 169, 97, 0.3);
+    border-radius: 3rem;
+  }
+
+  .nav-arrow {
+    width: 40px;
+    height: 40px;
+    background: rgba(201, 169, 97, 0.2);
+    border: 2px solid rgba(201, 169, 97, 0.4);
+    border-radius: 999px;
+    color: #C9A961;
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+
+  .nav-arrow:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .nav-dots {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(201, 169, 97, 0.3);
+    border: 2px solid rgba(201, 169, 97, 0.5);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .nav-dot.active {
+    background: #C9A961;
+    box-shadow: 0 0 15px rgba(201, 169, 97, 0.8);
+  }
+
+  /* MODAL OVERLAY – fixed + full screen + top layer */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.92) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 9999;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal-content-card {
+    position: relative;
+    z-index: 10000;
+    background: linear-gradient(135deg, #1a1a1a 0%, #020617 100%);
+    border-radius: 1.8rem;
+    padding: 2.8rem 2.2rem 2.2rem;
+    max-width: 900px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border: 2px solid rgba(201,169,97,0.7);
+    box-shadow:
+      0 0 30px rgba(0, 0, 0, 0.9),
+      0 0 40px rgba(201, 169, 97, 0.4);
+    color: #e5e7eb;
+  }
+
+  #contentTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #facc15;
+  }
+
+  #modalContentText {
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+
+  .modal-example-line {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.55rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-example-line span:first-child {
+    font-weight: 700;
+    color: #facc15;
+    min-width: 1.3rem;
+  }
+
+  .modal-example-line span:nth-child(2) {
+    flex: 1;
+  }
+
+  .use-sentence-btn {
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #15803d;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    border: 1px solid #16a34a;
+    white-space: nowrap;
+  }
+
+  .use-sentence-btn:hover {
+    background: #bbf7d0;
+  }
+
+  /* MOBILE TWEAKS */
+  @media (max-width: 768px) {
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
-      color: #e5e5e7;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      padding-top: 3rem;
-      overflow-x: hidden;
-      position: relative;
+      padding: 1.2rem 1rem;
+      padding-top: 1.6rem;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.08) 0%, transparent 45%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .main-container {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      width: 100%;
-    }
-
-    /* HEADER */
-    .header {
-      text-align: center;
-      margin-bottom: 2.2rem;
-    }
-
-    .brand-logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.6rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.35rem;
-      text-shadow: 0 0 40px rgba(201, 169, 97, 0.3);
-    }
-
-    .brand-subtitle {
-      font-size: 0.95rem;
-      color: #8e8e93;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    .brand-author {
-      font-size: 0.8rem;
-      color: #a1a1aa;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    /* CENTRAL CARD */
     .central-card {
-      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-      border: 3px solid #C9A961;
-      border-radius: 2rem;
-      padding: 2.8rem 2.4rem 2.4rem;
-      box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.8),
-        0 0 60px rgba(201, 169, 97, 0.3),
-        inset 0 1px 0 rgba(201, 169, 97, 0.2);
-      overflow: hidden;
-      margin-bottom: 2.25rem;
-      width: 100%;
-      position: relative; /* REQUIRED for toggle positioning */
+      padding: 2.4rem 1.5rem 2.1rem;
     }
 
     .central-card-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.9rem;
-      color: #F3E7C0;
-      margin-bottom: 0.3rem;
-      text-align: left;
+      font-size: 1.6rem;
     }
 
-    .central-card-subtitle {
-      font-size: 0.9rem;
-      color: #cbd5f5;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      text-align: left;
-    }
-
-    /* 🍾 SOFT-BLUR GOLD SEGMENTED CONTROL */
-    .segmented-toggle {
-      position: absolute;
-      top: 1.1rem;
-      right: 1.1rem;
-
-      display: inline-flex;
-      align-items: center;
-
-      /* Glass effect */
-      background: rgba(20, 20, 22, 0.32);
-      backdrop-filter: blur(5px);          /* ★ soft blur */
-      -webkit-backdrop-filter: blur(5px);  /* Safari support */
-      border: 1px solid rgba(201,169,97,0.35);
-
-      border-radius: 999px;
-      padding: 0.25rem;
-      height: 38px;
-      z-index: 20;
-    }
-
-    .segmented-bg {
-      position: absolute;
-      height: calc(100% - 6px);
-      top: 3px;
-      left: 3px;
-      width: calc((100% - 6px) / 3); /* 3 buttons */
-      border-radius: 999px;
-
-      background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
-      box-shadow: 0 0 15px rgba(201, 169, 97, 0.3);
-
-      transition: transform 0.25s ease;
-      z-index: 0;
-    }
-
-    .segmented-btn {
-      position: relative;
-      border: none;
-      background: transparent;
-      padding: 0 1rem;
-      height: 100%;
-
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-
-      color: #e5e5ea;
-      border-radius: 999px;
-      cursor: pointer;
-
-      z-index: 2;
-      transition: color 0.25s;
-    }
-
-    .segmented-btn.active {
-      color: #111;
-    }
-
-    @media (max-width: 600px) {
-      .segmented-toggle {
-        transform: scale(0.85);
-        top: 0.7rem;
-        right: 0.7rem;
-      }
-    }
-
-    /* PARAGRAPH AREA */
     .paragraph-area {
-      margin-top: 0.75rem;
-      padding: 1.25rem 1.5rem;
-      border-radius: 1rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(201, 169, 97, 0.35);
-      font-size: 0.95rem;
-      line-height: 1.8;
-      color: #e5e7eb;
-      text-align: left;
-      white-space: normal;
+      font-size: 0.9rem;
     }
 
-    .paragraph-area-empty {
-      font-style: italic;
-      color: #9ca3af;
-    }
-
-    /* COPY BUTTON */
-    .copy-btn {
-      margin-top: 1rem;
-      padding: 0.55rem 1.2rem;
-      border-radius: 999px;
-      border: 1px solid rgba(201, 169, 97, 0.6);
-      background: rgba(24, 24, 27, 0.95);
-      color: #FDE68A;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-
-    /* BUTTON GRID (Explain / Reason / Example / ...) */
     .button-grid {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 2rem;
-      justify-content: center;
-      flex-wrap: wrap;
+      gap: 0.4rem;
     }
 
     .stage-button {
-      background: linear-gradient(135deg, rgba(28, 28, 30, 0.95), rgba(20, 20, 22, 0.95));
-      border: 3px solid rgba(201, 169, 97, 0.4);
-      border-radius: 0.875rem;
-      padding: 1rem 1.25rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
+      padding: 0.8rem 0.8rem;
+      flex-direction: column;
+      gap: 0.3rem;
     }
-  </style>
+
+    .stage-button-label {
+      font-size: 0.65rem;
+    }
+
+    .modal-content-card {
+      padding: 2.2rem 1.6rem 1.8rem;
+    }
+  }
+</style>
 </head>
   <body>
 
