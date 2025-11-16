@@ -178,6 +178,95 @@
     color: #e5e7eb;
     min-height: 400px;
     margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .base-sentence-poster {
+    background: linear-gradient(135deg, rgba(201, 169, 97, 0.15) 0%, rgba(255, 160, 80, 0.1) 100%);
+    border: 3px solid #C9A961;
+    border-radius: 1rem;
+    padding: 1.8rem 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .base-sentence-poster::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+    border-radius: 1rem;
+    z-index: -1;
+    opacity: 0.3;
+    filter: blur(8px);
+  }
+
+  .base-sentence-label {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #C9A961 0%, #ffa050 100%);
+    color: #0a0a0a;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 15px rgba(201, 169, 97, 0.4);
+    z-index: 10;
+  }
+
+  .base-sentence-text {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #fef3c7;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .base-sentence-icon {
+    position: absolute;
+    font-size: 4rem;
+    opacity: 0.08;
+    color: #C9A961;
+    pointer-events: none;
+  }
+
+  .base-sentence-icon.top-left {
+    top: 10px;
+    left: 15px;
+  }
+
+  .base-sentence-icon.bottom-right {
+    bottom: 10px;
+    right: 15px;
+  }
+
+  .additional-text {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px dashed rgba(201, 169, 97, 0.3);
+  }
+
+  .opener-text {
+    display: inline-block;
+    background: rgba(52, 211, 153, 0.15);
+    color: #6ee7b7;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    margin-right: 0.3rem;
   }
 
   .linking-word {
@@ -476,6 +565,37 @@
       border: 2px solid #C9A961;
     }
 
+    .base-sentence-poster {
+      padding: 1.2rem 1rem;
+      margin-bottom: 1rem;
+      border-width: 2px;
+    }
+
+    .base-sentence-label {
+      font-size: 0.6rem;
+      padding: 0.3rem 0.8rem;
+      top: -10px;
+    }
+
+    .base-sentence-text {
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+
+    .base-sentence-icon {
+      font-size: 2.5rem;
+    }
+
+    .base-sentence-icon.top-left {
+      top: 8px;
+      left: 10px;
+    }
+
+    .base-sentence-icon.bottom-right {
+      bottom: 8px;
+      right: 10px;
+    }
+
     .action-btn {
       padding: 0.4rem 0.85rem;
       font-size: 0.64rem;
@@ -663,19 +783,40 @@ function updateParagraphArea() {
   const baseText = sentencesData[currentSentenceIndex]?.base || '';
   let additionalText = paragraphText.replace(baseText, '').trim();
   
-  // Build complete paragraph
-  let fullParagraph = baseText;
-  if (additionalText) {
-    fullParagraph = baseText + ' ' + additionalText;
+  // Build the poster-style base sentence
+  let baseSentenceHTML = `
+    <div class="base-sentence-poster">
+      <div class="base-sentence-label">Core Sentence</div>
+      <div class="base-sentence-icon top-left">❝</div>
+      <div class="base-sentence-icon bottom-right">❞</div>
+      <div class="base-sentence-text">${baseText}</div>
+    </div>
+  `;
+  
+  // Build additional content
+  let additionalHTML = '';
+  if (additionalText || currentOpener) {
+    let fullAdditional = '';
+    
+    if (currentOpener) {
+      fullAdditional = `<span class="opener-text">${currentOpener}</span> `;
+      // Make first letter of baseText lowercase when using opener
+      fullAdditional += baseText.charAt(0).toLowerCase() + baseText.slice(1);
+      if (additionalText) {
+        fullAdditional += ' ' + additionalText;
+      }
+    } else {
+      fullAdditional = baseText;
+      if (additionalText) {
+        fullAdditional += ' ' + additionalText;
+      }
+    }
+    
+    // Highlight linking words in the full text
+    additionalHTML = `<div class="additional-text">${highlightLinkingWords(fullAdditional)}</div>`;
   }
   
-  // Prepend opener BEFORE base sentence
-  if (currentOpener && fullParagraph) {
-    fullParagraph = currentOpener + " " + fullParagraph.charAt(0).toLowerCase() + fullParagraph.slice(1);
-  }
-  
-  // Highlight linking words
-  box.innerHTML = highlightLinkingWords(fullParagraph);
+  box.innerHTML = baseSentenceHTML + additionalHTML;
 }
 
 /* ========================================
@@ -804,7 +945,7 @@ function closeModal() {
 
 function showModalContent(transformName) {
   const s = sentencesData[currentSentenceIndex];
-const content = s[transformName] || [];
+  const content = s[transformName] || [];
   const div = document.getElementById("modalContentText");
 
   document.getElementById("contentTitle").textContent =
