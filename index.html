@@ -678,21 +678,26 @@ function updateParagraphArea() {
   let additionalText = paragraphText.replace(baseText, '').trim();
   
   // Build complete paragraph
-  let fullParagraph = baseText;
-  if (additionalText) {
-    fullParagraph = baseText + ' ' + additionalText;
-  }
+  let fullParagraph = '';
+  let baseToDisplay = baseText;
   
   // Prepend opener BEFORE base sentence
-  if (currentOpener && fullParagraph) {
-    fullParagraph = currentOpener + " " + fullParagraph.charAt(0).toLowerCase() + fullParagraph.slice(1);
+  if (currentOpener) {
+    fullParagraph = currentOpener + " ";
+    // Make first letter of baseText lowercase when using opener
+    baseToDisplay = baseText.charAt(0).toLowerCase() + baseText.slice(1);
   }
   
-  // Wrap base sentence in bold poster-style span
-  let displayText = fullParagraph.replace(baseText, `<span class="base-sentence">${baseText}</span>`);
+  // Add base sentence with bold styling
+  fullParagraph += `<span class="base-sentence">${baseToDisplay}</span>`;
+  
+  // Add additional text
+  if (additionalText) {
+    fullParagraph += ' ' + additionalText;
+  }
   
   // Highlight linking words
-  box.innerHTML = highlightLinkingWords(displayText);
+  box.innerHTML = highlightLinkingWords(fullParagraph);
 }
 
 /* ========================================
