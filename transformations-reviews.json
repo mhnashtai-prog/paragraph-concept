@@ -1,4 +1,6 @@
 {
+  "sentences": [
+    {
   "id": 1,
   "base": "This social media app is easy to use and feels well designed.",
   "explain": [
@@ -581,8 +583,7 @@
     "However, some lessons may feel too short for advanced learners.",
     "On the other hand, students need internet access to use it.",
     "In contrast, face-to-face teaching allows more personal interaction."
-       ]
+     ]
     }
   ]
 }
-
