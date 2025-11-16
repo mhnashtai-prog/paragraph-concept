@@ -556,7 +556,7 @@
 
     <!-- PARAGRAPH AREA -->
     <div id="paragraphArea" class="paragraph-area">
-      Travelling can widen our horizons.
+      Loading...
     </div>
 
     <!-- Copy + Final buttons -->
@@ -689,50 +689,40 @@ async function init() {
 }
 
 async function loadOpeners() {
-  // MOCK DATA - Replace with: await fetch("transformations-opener-sets.json")
-  openerSets = {
-    essays: ["In my opinion,", "It is widely believed that", "Many people argue that"],
-    reports: ["According to recent data,", "Research indicates that"],
-    reviews: ["Overall,", "In summary,", "To conclude,"]
-  };
-  rebuildOpenerMenu();
+  try {
+    const response = await fetch("transformations-opener-sets.json");
+    openerSets = await response.json();
+    rebuildOpenerMenu();
+  } catch (error) {
+    console.error("Error loading openers:", error);
+    // Fallback to empty arrays
+    openerSets = { essays: [], reports: [], reviews: [] };
+  }
 }
 
 async function loadMode(mode) {
   currentMode = mode;
   updateSegmentedIndicator(mode);
 
-  // MOCK DATA - Replace with actual fetch
-  const mockData = {
-    sentences: [
-      {
-        base: "Travelling can widen our horizons.",
-        transformations: {
-          explain: ["By exposing us to different cultures and perspectives, travel broadens our understanding."],
-          reason: ["This is because we experience diverse customs and traditions firsthand."],
-          example: ["For instance, visiting Japan taught me the value of punctuality and respect."],
-          reformulate: ["Exploring new destinations expands our worldview."],
-          result: ["As a result, we become more open-minded and culturally aware."],
-          compare: ["Unlike staying in one place, travelling exposes us to variety."],
-          contrast: ["However, not everyone has the opportunity to travel widely."]
-        }
-      },
-      {
-        base: "Technology allows us to stay connected.",
-        transformations: {
-          explain: ["Through smartphones and social media, we can communicate instantly."],
-          reason: ["This happens because the internet provides constant access."],
-          example: ["For example, video calls let families see each other daily."],
-          reformulate: ["Digital technology keeps us in constant contact."],
-          result: ["Therefore, geographical barriers no longer prevent relationships."],
-          compare: ["Unlike the past when letters took weeks, messages arrive instantly."],
-          contrast: ["However, this constant connectivity can feel overwhelming."]
-        }
-      }
-    ]
-  };
+  // Determine which JSON file to load based on mode
+  let jsonFile;
+  if (mode === 'reports') {
+    jsonFile = 'transformations-reports.json';
+  } else if (mode === 'reviews') {
+    jsonFile = 'transformations-reviews.json';
+  } else {
+    jsonFile = 'transformations.json'; // essays mode
+  }
 
-  sentencesData = mockData.sentences;
+  try {
+    const response = await fetch(jsonFile);
+    const data = await response.json();
+    sentencesData = data.sentences || [];
+  } catch (error) {
+    console.error(`Error loading ${jsonFile}:`, error);
+    sentencesData = [];
+  }
+
   currentSentenceIndex = 0;
   usedTransforms = {};
 
