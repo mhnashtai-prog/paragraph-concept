@@ -884,9 +884,12 @@ function rebuildOpenerMenu() {
 
   menu.innerHTML = "";
 
-  const list = currentMode === "reports" ? openerSets.reports :
-               currentMode === "reviews" ? openerSets.reviews :
-               openerSets.essays;
+  const modeData = currentMode === "reports" ? openerSets.reports :
+                   currentMode === "reviews" ? openerSets.reviews :
+                   openerSets.essays;
+
+  // Access the openers array from the nested structure
+  const list = modeData?.openers || [];
 
   list.forEach(opener => {
     const btn = document.createElement("button");
