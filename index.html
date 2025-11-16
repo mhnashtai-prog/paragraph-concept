@@ -773,7 +773,7 @@ function addSentenceToParagraph(transformName, index) {
   if (usedTransforms[currentSentenceIndex]?.[transformName]) return;
 
   const sentenceObj = sentencesData[currentSentenceIndex];
-  const list = (sentenceObj.transformations && sentenceObj.transformations[transformName]) || [];
+  const list = sentenceObj[transformName] || [];
   const chosen = list[index];
   if (!chosen) return;
 
@@ -804,7 +804,7 @@ function closeModal() {
 
 function showModalContent(transformName) {
   const s = sentencesData[currentSentenceIndex];
-  const content = (s.transformations && s.transformations[transformName]) || [];
+const content = s[transformName] || [];
   const div = document.getElementById("modalContentText");
 
   document.getElementById("contentTitle").textContent =
