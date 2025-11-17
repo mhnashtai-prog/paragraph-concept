@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>INTUITY - Unified Text Builder</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-black via-gray-950 to-black text-white p-4 pt-8 flex items-center justify-center">
+
+  <div id="app" class="max-w-5xl w-full flex flex-col"></div>
+
+  <script>
+    // ------------------ DATA ------------------ //
+
+    const sentencesByStage = [
+      // INTRODUCTION (Stage 0)
+      [
+        {
+          base: "Social media has fundamentally changed how we communicate.",
+          explain: [
+            "This shift represents a move from traditional face-to-face interactions to digital exchanges.",
+            "The transformation has affected both personal and professional spheres of communication."
+          ],
+          reason: [
+            "This is because platforms like Facebook and Instagram provide instant connectivity.",
+            "This happens because digital tools have made communication more accessible than ever before."
+          ],
+          example: [
+            "For example, families separated by continents can now video call daily.",
+            "For instance, businesses can collaborate across time zones in real-time."
+          ]
+        }
+      ],
+      // BODY 1 (Stage 1)
+      [
+        {
+          base: "Online learning offers unprecedented flexibility for students.",
+          explain: [
+            "This flexibility manifests in the ability to study from anywhere at any time.",
+            "The educational model has shifted from fixed schedules to personalized learning paths."
+          ],
+          reason: [
+            "This is because digital platforms eliminate geographical constraints.",
+            "This happens because students can access materials 24/7 without physical attendance."
+          ],
+          example: [
+            "For example, working professionals can pursue degrees while maintaining full-time jobs.",
+            "For instance, students in remote areas can access world-class education."
+          ],
+          result: [
+            "Therefore, education has become more accessible to diverse populations.",
+            "As a result, traditional barriers to learning are being dismantled."
+          ]
+        }
+      ],
+      // BODY 2 (Stage 2)
+      [
+        {
+          base: "Digital communication can lead to misunderstandings and shallow relationships.",
+          explain: [
+            "The absence of non-verbal cues makes it harder to convey tone and emotion.",
+            "Text-based interactions lack the depth and nuance of face-to-face conversations."
+          ],
+          reason: [
+            "This is because written messages cannot capture body language or facial expressions.",
+            "This happens because people often misinterpret the intent behind digital messages."
+          ],
+          example: [
+            "For example, a simple text message can be read as angry when it was meant to be neutral.",
+            "For instance, emojis often fail to convey genuine emotional states."
+          ],
+          result: [
+            "Consequently, relationships built primarily online may lack emotional depth.",
+            "As a result, many people feel more isolated despite being constantly connected."
+          ]
+        }
+      ],
+      // BODY 3 (Stage 3)
+      [
+        {
+          base: "Excessive screen time has significant health implications.",
+          explain: [
+            "Prolonged exposure to screens affects both physical and mental wellbeing.",
+            "The sedentary nature of digital device use contributes to various health problems."
+          ],
+          reason: [
+            "This is because extended screen time reduces physical activity and strains the eyes.",
+            "This happens because the blue light from screens disrupts natural sleep patterns."
+          ],
+          example: [
+            "For example, teenagers who spend more than six hours daily on devices report higher anxiety levels.",
+            "For instance, computer vision syndrome has become increasingly common among young adults."
+          ],
+          result: [
+            "Therefore, balanced digital habits are essential for maintaining health.",
+            "Consequently, experts recommend regular screen breaks and outdoor activities."
+          ]
+        }
+      ],
+      // CONCLUSION (Stage 4)
+      [
+        {
+          base: "While digital technology offers remarkable benefits, mindful usage is crucial.",
+          explain: [
+            "The key lies in finding a balance between online and offline interactions.",
+            "Technology should enhance rather than replace meaningful human connections."
+          ],
+          result: [
+            "Therefore, we must use technology intentionally to improve our lives.",
+            "Ultimately, conscious digital citizenship will determine whether technology serves or dominates us."
+          ]
+        }
+      ]
+    ];
+
+    const openers = [
+      "In today's world",
+      "It is widely believed that",
+      "Recent studies suggest that",
+      "From my perspective",
+      "Increasingly",
+      "Without a doubt",
+      "It goes without saying that",
+      "Looking at current trends"
+    ];
+
+    const essayStages = [
+      { label: 'Intro' },
+      { label: 'Para 1' },
+      { label: 'Para 2' },
+      { label: 'Para 3' },
+      { label: 'Concl' }
+    ];
+
+    const sampleEssays = [
+      {
+        paragraphs: [
+          "In today's interconnected world, social media has fundamentally changed how we communicate. This shift represents a move from traditional face-to-face interactions to digital exchanges. For example, families separated by continents can now video call daily, making physical distance less of a barrier to maintaining relationships.",
+          "Online learning offers unprecedented flexibility for students. This is because digital platforms eliminate geographical constraints, allowing students to access materials 24/7 without physical attendance. For instance, working professionals can pursue degrees while maintaining full-time jobs. Therefore, education has become more accessible to diverse populations than ever before.",
+          "However, digital communication can lead to misunderstandings and shallow relationships. This happens because written messages cannot capture body language or facial expressions, which are crucial for conveying tone and emotion. For example, a simple text message can be read as angry when it was meant to be neutral. Consequently, relationships built primarily online may lack the emotional depth of in-person connections.",
+          "Moreover, excessive screen time has significant health implications. Prolonged exposure to screens affects both physical and mental wellbeing, as the blue light from screens disrupts natural sleep patterns. For instance, teenagers who spend more than six hours daily on devices report higher anxiety levels. Therefore, balanced digital habits are essential for maintaining health.",
+          "In conclusion, while digital technology offers remarkable benefits, mindful usage is crucial. The key lies in finding a balance between online and offline interactions, ensuring that technology should enhance rather than replace meaningful human connections. Ultimately, conscious digital citizenship will determine whether technology serves or dominates us."
+        ]
+      }
+    ];
+
+    // ------------------ STATE ------------------ //
+
+    let mode = 'write';               // 'read' or 'write'
+    let currentStage = 0;             // 0-4
+    let viewLevel = 'sentence';       // 'sentence' or 'paragraph'
+    let currentSentenceIndex = 0;
+    let usedTransforms = {};
+    let paragraphText = '';
+    let currentOpener = '';
+    let showOpenerMenu = false;
+    let showXRay = false;
+    let essayParagraphs = [null, null, null, null, null];
+    let modalOpen = false;
+    let currentTransform = '';
+
+    // ------------------ LOGIC FUNCTIONS ------------------ //
+
+    function getCurrentSentences() {
+      return sentencesByStage[currentStage];
+    }
+
+    function getTransforms() {
+      return currentStage === 4
+        ? ['explain', 'result']
+        : ['explain', 'reason', 'example', 'result'];
+    }
+
+    function resetParagraphForStage() {
+      if (mode === 'write') {
+        const currentSentences = getCurrentSentences();
+        if (currentSentences && currentSentences[currentSentenceIndex]) {
+          paragraphText = currentSentences[currentSentenceIndex].base;
+          usedTransforms = {};
+          currentOpener = '';
+        }
+      }
+    }
+
+    function addSentence(transform, index) {
+      const currentSentences = getCurrentSentences();
+      if (usedTransforms[transform]) return;
+      const sentenceArray = currentSentences[currentSentenceIndex][transform] || [];
+      const sentence = sentenceArray[index];
+      if (!sentence) return;
+      paragraphText = (paragraphText.trim() + ' ' + sentence).trim();
+      usedTransforms = { ...usedTransforms, [transform]: true };
+      modalOpen = false;
+      render();
+    }
+
+    function getFullParagraph() {
+      const currentSentences = getCurrentSentences();
+      const base = currentSentences[currentSentenceIndex].base;
+      let additional = paragraphText.replace(base, '').trim();
+      let full = base;
+      if (additional) full = base + ' ' + additional;
+      if (currentOpener && full) {
+        full = currentOpener + ' ' + full.charAt(0).toLowerCase() + full.slice(1);
+      }
+      return full;
+    }
+
+    function copyText() {
+      const text =
+        mode === 'write'
+          ? getFullParagraph()
+          : sampleEssays[0].paragraphs[currentStage];
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      } else {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+
+    function analyzeParagraphStructure() {
+      const parts = [];
+      const currentSentences = getCurrentSentences();
+      const base = currentSentences[currentSentenceIndex].base;
+
+      if (currentOpener) {
+        parts.push({
+          type: 'opener',
+          text: currentOpener,
+          color: 'bg-cyan-500/20 border-cyan-500',
+          label: 'OPENER'
+        });
+      }
+
+      parts.push({
+        type: 'topic',
+        text: base,
+        color: 'bg-yellow-500/20 border-yellow-500',
+        label: 'TOPIC SENTENCE'
+      });
+
+      const colors = {
+        explain: { color: 'bg-purple-500/20 border-purple-500', label: 'EXPLANATION' },
+        reason: { color: 'bg-blue-500/20 border-blue-500', label: 'REASON' },
+        example: { color: 'bg-green-500/20 border-green-500', label: 'EXAMPLE' },
+        result: { color: 'bg-orange-500/20 border-orange-500', label: 'RESULT' },
+        contrast: { color: 'bg-red-500/20 border-red-500', label: 'CONTRAST' }
+      };
+
+      Object.keys(usedTransforms).forEach(transform => {
+        const sentences = currentSentences[currentSentenceIndex][transform];
+        if (!sentences) return;
+        const matchedSentence = sentences.find(s => paragraphText.includes(s));
+        if (matchedSentence) {
+          parts.push({
+            type: transform,
+            text: matchedSentence,
+            ...colors[transform]
+          });
+        }
+      });
+
+      return parts;
+    }
+
+    function analyzeSampleParagraph(paragraph) {
+      const sentences = paragraph
+        .split('. ')
+        .map(s => s.trim())
+        .filter(s => s);
+
+      return sentences.map((sentence, i) => {
+        let type = 'supporting';
+        let color = 'bg-gray-500/20 border-gray-500';
+        let label = 'SUPPORTING';
+        const s = sentence;
+
+        if (i === 0) {
+          type = 'topic';
+          color = 'bg-yellow-500/20 border-yellow-500';
+          label = 'TOPIC SENTENCE';
+        } else if (/for example|for instance/i.test(s)) {
+          type = 'example';
+          color = 'bg-green-500/20 border-green-500';
+          label = 'EXAMPLE';
+        } else if (/this is because|this happens because|since|because/i.test(s)) {
+          type = 'reason';
+          color = 'bg-blue-500/20 border-blue-500';
+          label = 'REASON';
+        } else if (/therefore|thus|as a result|consequently|ultimately/i.test(s)) {
+          type = 'result';
+          color = 'bg-orange-500/20 border-orange-500';
+          label = 'RESULT';
+        } else if (/however|although|while|despite|moreover/i.test(s)) {
+          type = 'contrast';
+          color = 'bg-red-500/20 border-red-500';
+          label = 'CONTRAST';
+        } else if (/in today's|it is widely|recent studies|from my perspective|increasingly|without a doubt|looking at/i.test(s)) {
+          type = 'opener';
+          color = 'bg-cyan-500/20 border-cyan-500';
+          label = 'OPENER';
+        }
+
+        return {
+          type,
+          text: sentence.endsWith('.') ? sentence : sentence + '.',
+          color,
+          label
+        };
+      });
+    }
+
+    function saveParagraphToStage() {
+      const structure = analyzeParagraphStructure();
+      const text = getFullParagraph();
+      const newParagraph = { text, structure };
+      const newArray = [...essayParagraphs];
+      newArray[currentStage] = newParagraph;
+      essayParagraphs = newArray;
+
+      if (currentStage < 4) {
+        currentStage = currentStage + 1;
+        viewLevel = 'sentence';
+        showXRay = false;
+        resetParagraphForStage();
+      }
+      render();
+    }
+
+    // ------------------ RENDER HELPERS ------------------ //
+
+    function renderContentArea() {
+      const currentParagraph = sampleEssays[0].paragraphs[currentStage];
+      const currentSentences = getCurrentSentences();
+      const transforms = getTransforms();
+
+      if (mode === 'read') {
+        if (!showXRay) {
+          return `
+            <p class="text-lg md:text-2xl leading-relaxed text-gray-100 font-light">
+              ${currentParagraph}
+            </p>
+          `;
+        } else {
+          const parts = analyzeSampleParagraph(currentParagraph);
+          return `
+            <div class="space-y-3 md:space-y-4">
+              ${parts.map((part, i) => `
+                <div class="p-4 md:p-5 rounded-xl border-l-4 ${part.color}">
+                  <div class="text-[9px] md:text-[10px] uppercase font-bold mb-2 opacity-60 tracking-wider">${part.label}</div>
+                  <p class="text-base md:text-lg text-gray-200 leading-relaxed">${part.text}</p>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+      } else { // WRITE MODE
+        if (viewLevel === 'paragraph' && essayParagraphs[currentStage]) {
+          if (!showXRay) {
+            return `
+              <p class="text-lg md:text-2xl leading-relaxed text-gray-100 font-light">
+                ${essayParagraphs[currentStage].text}
+              </p>
+            `;
+          } else {
+            return `
+              <div class="space-y-3 md:space-y-4">
+                ${essayParagraphs[currentStage].structure.map(part => `
+                  <div class="p-4 md:p-5 rounded-xl border-l-4 ${part.color}">
+                    <div class="text-[9px] md:text-[10px] uppercase font-bold mb-2 opacity-60 tracking-wider">${part.label}</div>
+                    <p class="text-base md:text-lg text-gray-200 leading-relaxed">${part.text}</p>
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          }
+        } else {
+          // sentence-level builder view
+          const base = currentSentences[currentSentenceIndex].base;
+          const additional = paragraphText !== base
+            ? paragraphText.replace(base, '').trim()
+            : '';
+          const topic = currentOpener
+            ? base.charAt(0).toLowerCase() + base.slice(1)
+            : base;
+
+          return `
+            <div class="text-lg md:text-xl leading-loose text-gray-100">
+              ${currentOpener ? `<span class="text-green-400 font-semibold">${currentOpener} </span>` : ''}
+              <span class="font-bold text-yellow-200 text-xl md:text-2xl">${topic}</span>
+              ${additional ? `<span> ${additional}</span>` : ''}
+            </div>
+          `;
+        }
+      }
+    }
+
+    function renderModal() {
+      if (!modalOpen) return '';
+      const currentSentences = getCurrentSentences();
+      const options = (currentSentences[currentSentenceIndex][currentTransform] || []);
+
+      return `
+        <div class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4" data-action="closeModal">
+          <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-2xl w-full border-2 border-yellow-600/70 shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-2xl font-bold text-yellow-400 uppercase tracking-wider">${currentTransform}</h3>
+              <button class="text-gray-400 hover:text-white text-2xl" data-action="closeModal">×</button>
+            </div>
+            <div class="space-y-3 max-h-96 overflow-y-auto">
+              ${options.length === 0
+                ? `<p class="text-gray-400 text-sm">No options available for this transform.</p>`
+                : options.map((option, i) => `
+                  <div class="flex items-start gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/50 transition-all">
+                    <span class="text-yellow-400 font-bold min-w-[2rem]">${i + 1}.</span>
+                    <span class="flex-1 text-gray-200">${option}</span>
+                    <button
+                      class="px-4 py-1 bg-green-600 hover:bg-green-500 text-white rounded-full text-sm font-semibold transition-all"
+                      data-action="useSentence"
+                      data-transform="${currentTransform}"
+                      data-index="${i}"
+                    >
+                      ➕ Use
+                    </button>
+                  </div>
+                `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ------------------ MAIN RENDER ------------------ //
+
+    function render() {
+      const app = document.getElementById('app');
+      const currentParagraph = sampleEssays[0].paragraphs[currentStage];
+      const transforms = getTransforms();
+
+      app.innerHTML = `
+        <!-- HEADER -->
+        <div class="text-center mb-8">
+          <h1 class="text-5xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-2">
+            INTUITY
+          </h1>
+          <p class="text-gray-500 uppercase tracking-wider text-xs">Intuitive & Immersive Learning</p>
+        </div>
+
+        <!-- MAIN BOX -->
+        <div class="bg-gradient-to-br from-gray-900/95 to-black border-3 border-yellow-600 rounded-3xl shadow-2xl shadow-yellow-900/30 mb-4 overflow-hidden" style="min-height: 600px;">
+          
+          <!-- TOP BAR -->
+          <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-0 px-4 md:px-6 py-3 border-b border-yellow-600/20">
+            
+            <!-- MODE TOGGLE -->
+            <div class="flex justify-center md:justify-start">
+              <div class="relative inline-flex items-center bg-black/40 backdrop-blur border border-yellow-600/30 rounded-full p-0.5 h-8 md:h-7">
+                <div 
+                  class="absolute h-7 md:h-6 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 transition-transform duration-300"
+                  style="
+                    width: calc(50% - 2px);
+                    left: ${mode === 'read' ? '2px' : 'calc(50% + 0px)'};
+                    top: 2px;
+                  "
+                ></div>
+                <button
+                  data-action="setMode"
+                  data-mode="read"
+                  class="relative z-10 px-5 md:px-4 py-1 md:py-0.5 text-xs md:text-[10px] font-bold uppercase tracking-wider rounded-full transition-colors ${mode === 'read' ? 'text-black' : 'text-gray-500'}"
+                >
+                  Read
+                </button>
+                <button
+                  data-action="setMode"
+                  data-mode="write"
+                  class="relative z-10 px-5 md:px-4 py-1 md:py-0.5 text-xs md:text-[10px] font-bold uppercase tracking-wider rounded-full transition-colors ${mode === 'write' ? 'text-black' : 'text-gray-500'}"
+                >
+                  Write
+                </button>
+              </div>
+            </div>
+
+            <!-- STAGE NAV -->
+            <div class="flex items-center gap-2 md:gap-3 overflow-x-auto pb-1 md:pb-0 scrollbar-hide justify-center md:justify-start">
+              ${essayStages.map((stage, i) => {
+                const isCurrent = currentStage === i;
+                const hasParagraph = !!essayParagraphs[i];
+                const baseClass = "text-[10px] md:text-[10px] font-bold uppercase tracking-wider px-3 md:px-2.5 py-1.5 md:py-1 rounded-full transition-all whitespace-nowrap flex-shrink-0";
+                let stateClass;
+                if (isCurrent) {
+                  stateClass = "bg-yellow-500 text-black shadow-lg";
+                } else if (hasParagraph) {
+                  stateClass = "bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 hover:bg-yellow-500/30";
+                } else {
+                  stateClass = "text-gray-600 hover:text-gray-400 border border-gray-800 hover:border-gray-700";
+                }
+                return `
+                  <button
+                    class="${baseClass} ${stateClass}"
+                    data-action="setStage"
+                    data-stage="${i}"
+                  >
+                    ${stage.label}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- X-RAY TOGGLE -->
+            <div class="flex justify-center md:justify-end">
+              <button
+                data-action="toggleXRay"
+                class="text-xs md:text-[10px] font-bold uppercase tracking-wider px-4 md:px-3 py-1.5 md:py-1 bg-black/40 hover:bg-black/60 text-yellow-400 rounded-full transition-all border border-yellow-600/30"
+              >
+                ${showXRay ? 'Normal' : 'X-Ray'}
+              </button>
+            </div>
+          </div>
+
+          <!-- CONTENT AREA -->
+          <div class="px-6 md:px-10 py-6 md:py-10 flex-1">
+            ${renderContentArea()}
+          </div>
+        </div>
+
+        <!-- ACTIONS ROW -->
+        <div class="flex items-center justify-between mb-4 gap-2">
+          <div class="flex gap-2">
+            <button 
+              data-action="copy"
+              class="px-4 md:px-4 py-2 bg-gray-900/90 hover:bg-gray-800 text-yellow-400 rounded-full text-xs uppercase font-bold tracking-wider transition-all border border-gray-800"
+            >
+              Copy
+            </button>
+            
+            ${mode === 'write' && viewLevel === 'sentence' ? `
+              <div class="relative">
+                <button 
+                  data-action="toggleOpenerMenu"
+                  class="px-4 md:px-4 py-2 bg-gray-900/90 hover:bg-gray-800 text-yellow-400 rounded-full text-xs uppercase font-bold tracking-wider transition-all border border-gray-800"
+                >
+                  Opener ▾
+                </button>
+                
+                ${showOpenerMenu ? `
+                  <div class="absolute bottom-full mb-2 right-0 bg-gray-900/98 border border-yellow-600/40 rounded-xl shadow-2xl p-2 min-w-64 max-h-64 overflow-y-auto z-20">
+                    ${openers.map((opener, i) => `
+                      <button
+                        class="block w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-yellow-600/20 rounded-lg transition-all"
+                        data-action="selectOpener"
+                        data-index="${i}"
+                      >
+                        ${opener}…
+                      </button>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="flex gap-2">
+            ${mode === 'write' ? (
+              viewLevel === 'paragraph' && essayParagraphs[currentStage]
+                ? `
+                  <button
+                    data-action="setViewLevel"
+                    data-view="sentence"
+                    class="px-4 md:px-5 py-2 bg-yellow-600 hover:bg-yellow-500 text-black rounded-full text-xs uppercase font-bold tracking-wider transition-all"
+                  >
+                    Edit
+                  </button>
+                `
+                : viewLevel === 'sentence'
+                  ? `
+                    ${essayParagraphs[currentStage] ? `
+                      <button
+                        data-action="setViewLevel"
+                        data-view="paragraph"
+                        class="px-4 md:px-5 py-2 bg-gray-900/90 hover:bg-gray-800 text-yellow-400 rounded-full text-xs uppercase font-bold tracking-wider transition-all border border-gray-800"
+                      >
+                        View
+                      </button>
+                    ` : ''}
+                    <button
+                      data-action="saveParagraph"
+                      class="px-4 md:px-5 py-2 bg-yellow-600 hover:bg-yellow-500 text-black rounded-full text-xs uppercase font-bold tracking-wider transition-all shadow-lg"
+                    >
+                      Save ▸
+                    </button>
+                  `
+                  : ''
+            ) : ''}
+          </div>
+        </div>
+
+        <!-- TRANSFORM BUTTONS -->
+        ${mode === 'write' && viewLevel === 'sentence' ? `
+          <div class="flex gap-2 flex-wrap justify-center mb-4">
+            ${transforms.map(transform => `
+              <button
+                data-action="openTransform"
+                data-transform="${transform}"
+                ${usedTransforms[transform] ? 'disabled' : ''}
+                class="px-5 md:px-7 py-2.5 md:py-3 rounded-xl text-xs uppercase font-bold tracking-wider transition-all ${
+                  usedTransforms[transform]
+                    ? 'bg-gray-900/30 text-gray-700 cursor-not-allowed border border-gray-800/50'
+                    : 'bg-gray-900/90 hover:bg-yellow-600/20 text-yellow-400 border-2 border-yellow-600/30 hover:border-yellow-600'
+                }"
+              >
+                ${transform}
+              </button>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        <!-- NAVIGATION -->
+        <div class="flex items-center justify-center gap-4 mb-4">
+          <button
+            data-action="prevStage"
+            class="w-9 h-9 flex items-center justify-center bg-yellow-600/20 border-2 border-yellow-600/40 rounded-full text-yellow-400 ${currentStage === 0 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-yellow-600/30'} transition-all text-lg font-bold"
+            ${currentStage === 0 ? 'disabled' : ''}
+          >
+            ←
+          </button>
+          
+          <div class="flex gap-2">
+            ${essayStages.map((_, i) => `
+              <button
+                data-action="setStage"
+                data-stage="${i}"
+                class="w-2.5 h-2.5 rounded-full transition-all ${
+                  i === currentStage
+                    ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50 scale-125'
+                    : 'bg-yellow-600/30 border border-yellow-600/50 hover:bg-yellow-600/50'
+                }"
+              ></button>
+            `).join('')}
+          </div>
+          
+          <button
+            data-action="nextStage"
+            class="w-9 h-9 flex items-center justify-center bg-yellow-600/20 border-2 border-yellow-600/40 rounded-full text-yellow-400 ${currentStage === 4 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-yellow-600/30'} transition-all text-lg font-bold"
+            ${currentStage === 4 ? 'disabled' : ''}
+          >
+            →
+          </button>
+        </div>
+
+        <!-- MODAL -->
+        ${renderModal()}
+      `;
+    }
+
+    // ------------------ EVENT HANDLING ------------------ //
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      if (btn.disabled) return;
+
+      const action = btn.dataset.action;
+
+      switch (action) {
+        case 'setMode': {
+          const newMode = btn.dataset.mode;
+          mode = newMode;
+          viewLevel = 'sentence';
+          showXRay = false;
+          resetParagraphForStage();
+          render();
+          break;
+        }
+        case 'setStage': {
+          const stage = parseInt(btn.dataset.stage, 10);
+          currentStage = stage;
+          viewLevel = 'sentence';
+          showXRay = false;
+          resetParagraphForStage();
+          render();
+          break;
+        }
+        case 'toggleXRay': {
+          showXRay = !showXRay;
+          render();
+          break;
+        }
+        case 'copy': {
+          copyText();
+          break;
+        }
+        case 'toggleOpenerMenu': {
+          showOpenerMenu = !showOpenerMenu;
+          render();
+          break;
+        }
+        case 'selectOpener': {
+          const idx = parseInt(btn.dataset.index, 10);
+          currentOpener = openers[idx];
+          showOpenerMenu = false;
+          render();
+          break;
+        }
+        case 'setViewLevel': {
+          const view = btn.dataset.view;
+          viewLevel = view;
+          showXRay = false;
+          render();
+          break;
+        }
+        case 'saveParagraph': {
+          saveParagraphToStage();
+          break;
+        }
+        case 'openTransform': {
+          const transform = btn.dataset.transform;
+          if (!usedTransforms[transform]) {
+            currentTransform = transform;
+            modalOpen = true;
+            render();
+          }
+          break;
+        }
+        case 'closeModal': {
+          modalOpen = false;
+          render();
+          break;
+        }
+        case 'useSentence': {
+          const transform = btn.dataset.transform;
+          const index = parseInt(btn.dataset.index, 10);
+          addSentence(transform, index);
+          break;
+        }
+        case 'prevStage': {
+          if (currentStage > 0) {
+            currentStage -= 1;
+            viewLevel = 'sentence';
+            showXRay = false;
+            resetParagraphForStage();
+            render();
+          }
+          break;
+        }
+        case 'nextStage': {
+          if (currentStage < 4) {
+            currentStage += 1;
+            viewLevel = 'sentence';
+            showXRay = false;
+            resetParagraphForStage();
+            render();
+          }
+          break;
+        }
+        default:
+          break;
+      }
+    });
+
+    // ------------------ INITIALIZE ------------------ //
+
+    resetParagraphForStage();
+    render();
+  </script>
+</body>
+</html>
